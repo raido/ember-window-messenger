@@ -1,4 +1,4 @@
-# Ember-dispatcher
+# [WIP] Ember Window Messenger
 
 This README outlines the details of collaborating on this Ember addon.
 

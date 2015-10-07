@@ -2,5 +2,9 @@
 'use strict';
 
 module.exports = {
-  name: 'ember-dispatcher'
+  name: 'ember-window-messenger',
+
+  isDevelopingAddon: function() {
+    return true;
+  }
 };
