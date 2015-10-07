@@ -1,4 +1,4 @@
-# [WIP] Ember Window Messenger
+# [WIP] Ember Window Messenger [![Build Status](https://travis-ci.org/raido/ember-window-messenger.svg)](https://travis-ci.org/raido/ember-window-messenger)
 
 This README outlines the details of collaborating on this Ember addon.
 
