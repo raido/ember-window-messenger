@@ -26,6 +26,7 @@ before_install:
   - "npm install -g npm@^2"
 
 install:
+  - npm install -g codeclimate-test-reporter
   - npm install -g bower
   - npm install
   - bower install
