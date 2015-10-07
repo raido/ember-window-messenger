@@ -14,5 +14,8 @@
   },
   "resolutions": {
     "ember": "release"
+  },
+  "devDependencies": {
+    "blanket": "~1.1.5"
   }
 }
