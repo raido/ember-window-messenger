@@ -1,17 +1,8 @@
 import Ember from 'ember';
 import BaseServiceMixin from '../mixins/base-service';
+import generateUuid from '../utils/generate-uuid';
 
 const { run } = Ember;
-
-function generateUuid() {
-  var date = new Date().getTime();
-  var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (character) {
-    var random = (date + Math.random() * 16) % 16 | 0;
-    date = Math.floor(date / 16);
-    return (character === 'x' ? random : (random & 0x7 | 0x8)).toString(16);
-  });
-  return uuid;
-}
 
 export default Ember.Service.extend(BaseServiceMixin, {
   callbacks: {},
