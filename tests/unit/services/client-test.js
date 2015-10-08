@@ -20,34 +20,29 @@ test('it exists', function(assert) {
       'my-age-is': age
     },
     window: {
-      postMessage: function(payload) {
-        function respond(id, answer) {
-          let query = {
-            id: id,
-            type: 'messenger-server-inbound',
-            response: answer
-          };
+      parent: {
+        postMessage: function(payload) {
+          function respond(id, answer) {
+            let query = {
+              id: id,
+              type: 'messenger-server-inbound',
+              response: answer
+            };
 
-          windowEvents['message']({
-            data: JSON.stringify(query),
-            origin: null,
-            source: null
-          });
+            windowEvents['message']({
+              data: JSON.stringify(query),
+              origin: null,
+              source: null
+            });
+          }
+
+          let question = JSON.parse(payload);
+          respond(question.id, client.answers[question.name]);
         }
-
-        let question = JSON.parse(payload);
-        respond(question.id, client.answers[question.name]);
       },
 
       addEventListener: function(event, callback) {
         windowEvents[event] = callback;
-      },
-
-      //Fake parent window postMessage
-      parent: {
-        postMessage: function(payload) {
-          assert.ok(payload);
-        }
       }
     }
   });
