@@ -7,7 +7,7 @@ moduleFor('service:client', 'Unit | Service | Client', {
 
 // Replace this with your real tests.
 test('it exists', function(assert) {
-  assert.expect(3);
+  assert.expect(6);
 
   let name = 'Foo';
   let age = 5;
@@ -55,4 +55,12 @@ test('it exists', function(assert) {
   client.fetch('parent:my-age-is').then(function(returnedAge) {
     assert.equal(returnedAge, age, 'Age should be 5');
   });
+
+  client.addTarget('target-1', {});
+  assert.ok(client.get('targets.target-1'), 'There should be an empty target');
+
+  client.removeTarget('target-1');
+  assert.equal(null, client.get('targets.target-1'), 'There should not be a target');
+
+  assert.equal(null, client._parseQuestion({}), 'It should return null');
 });

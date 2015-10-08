@@ -26,9 +26,22 @@ export default Ember.Service.extend({
     return this.get('window');
   },
 
-  addTarget(name, target) {
-    this.targets[name] = target.get(0).contentWindow;
+  /**
+   * Add new contentWindow target
+   *
+   * @param {String} name         String name of the target
+   * @param {contentWindow} targetWindow DOM contentWindow
+   */
+
+  addTarget(name, targetWindow) {
+    this.targets[name] = targetWindow;
   },
+
+  /**
+   * Remove contentWindow target
+   *
+   * @param  {String} name
+   */
 
   removeTarget(name) {
     delete this.targets[name];
@@ -56,7 +69,7 @@ export default Ember.Service.extend({
   fetch(question, queryParams) {
     let client = this;
     let uri = client._parseURI(question);
-    return new Ember.RSVP.Promise(function(resolve, reject) {
+    return new Ember.RSVP.Promise(function(resolve/*, reject*/) {
       let id = generateUuid();
       let query = {
         id: id,
@@ -68,10 +81,10 @@ export default Ember.Service.extend({
       client.callbacks[id] = {
         success: function(json) {
           Ember.run(null, resolve, json);
-        },
+        }/* TODO implement,
         error: function() {
           Ember.run(null, reject, null);
-        }
+        }*/
       };
       client._targetFor(uri.target).postMessage(JSON.stringify(query), '*');
     });
