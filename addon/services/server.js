@@ -1,19 +1,8 @@
 import Ember from 'ember';
+import BaseServiceMixin from '../mixins/base-service';
 
-const { run } = Ember;
-
-export default Ember.Service.extend(Ember.Evented, {
-  window: null,
-
-  init() {
-    this._super(...arguments);
-    this.getWindow().addEventListener('message', run.bind(this, 'onMessage'));
-  },
-
-  getWindow() {
-    return this.get('window');
-  },
-
+export default Ember.Service.extend(Ember.Evented, BaseServiceMixin, {
+  
   respond(id, answer, source) {
     let query = {
       id: id,
@@ -32,12 +21,5 @@ export default Ember.Service.extend(Ember.Evented, {
         }, question.query);
       }
     }
-  },
-
-  _parseQuestion(data) {
-    if (typeof data !== 'object') {
-      return JSON.parse(data) || null;
-    }
-    return null;
   }
 });

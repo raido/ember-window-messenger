@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import BaseServiceMixin from '../mixins/base-service';
 
 const { run } = Ember;
 
@@ -12,19 +13,9 @@ function generateUuid() {
   return uuid;
 }
 
-export default Ember.Service.extend({
+export default Ember.Service.extend(BaseServiceMixin, {
   callbacks: {},
-  window: null,
   targets: {},
-
-  init() {
-    this._super(...arguments);
-    this.getWindow().addEventListener('message', run.bind(this, 'onMessage'));
-  },
-
-  getWindow() {
-    return this.get('window');
-  },
 
   /**
    * Add new contentWindow target
@@ -87,7 +78,7 @@ export default Ember.Service.extend({
 
       client.callbacks[id] = {
         success: function(json) {
-          Ember.run(null, resolve, json);
+          run(null, resolve, json);
         }/* TODO implement,
         error: function() {
           Ember.run(null, reject, null);
@@ -107,12 +98,5 @@ export default Ember.Service.extend({
         }
       }
     }
-  },
-
-  _parseQuestion(data) {
-    if (typeof data !== 'object') {
-      return JSON.parse(data) || null;
-    }
-    return null;
   }
 });
