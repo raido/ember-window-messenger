@@ -7,6 +7,7 @@ const { run } = Ember;
 export default Ember.Service.extend(BaseServiceMixin, {
   callbacks: {},
   targets: {},
+  targetOriginMap: null,
 
   /**
    * Add new contentWindow target
@@ -47,17 +48,34 @@ export default Ember.Service.extend(BaseServiceMixin, {
 
   _isTargetParent(target) {
     let win = this.getWindow();
-    let isEmbedded = win.self !== win.top;
+    let isEmbedded = win.self !== win.top || win.opener;
     return isEmbedded || target === 'parent';
   },
 
+  _getWindowParent() {
+    let win = this.getWindow();
+    return win.opener || win.parent;
+  },
+
   _targetFor(target) {
-    return this._isTargetParent(target) ? this.getWindow().parent : this.targets[target];
+    return this._isTargetParent(target) ? this._getWindowParent() : this.targets[target];
+  },
+
+  _targetOriginFor(target) {
+    return this.get('targetOriginMap.' + target);
   },
 
   fetch(question, queryParams) {
     let client = this;
     let uri = client._parseURI(question);
+    let targetName = uri.target;
+
+    let targetOrigin = client._targetOriginFor(targetName);
+    Ember.assert('Target origin for target: ' + targetName + ' does not exist', targetOrigin);
+
+    let target = client._targetFor(targetName);
+    Ember.assert('Target window is not registered for: ' + targetName, target);
+
     return new Ember.RSVP.Promise(function(resolve, reject) {
       let id = generateUuid();
       let query = {
@@ -75,7 +93,7 @@ export default Ember.Service.extend(BaseServiceMixin, {
           run(null, reject, json);
         }
       };
-      client._targetFor(uri.target).postMessage(JSON.stringify(query), '*');
+      target.postMessage(JSON.stringify(query), targetOrigin);
     });
   },
 
