@@ -16,6 +16,9 @@ test('it exists', function(assert) {
   let windowEvents = {};
 
   var client = this.subject({
+    targetOriginMap: {
+      parent: '*'
+    },
     answers: {
       'my-name-is': name,
       'my-age-is': age,
