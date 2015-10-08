@@ -7,26 +7,29 @@ moduleFor('service:client', 'Unit | Service | Client', {
 
 // Replace this with your real tests.
 test('it exists', function(assert) {
-  assert.expect(5);
+  assert.expect(6);
 
   let name = 'Foo';
   let age = 5;
+  let notFound = 404;
 
   let windowEvents = {};
 
   var client = this.subject({
     answers: {
       'my-name-is': name,
-      'my-age-is': age
+      'my-age-is': age,
+      'not-found': notFound
     },
     window: {
       parent: {
         postMessage: function(payload) {
-          function respond(id, answer) {
+          function respond(id, answer, error) {
             let query = {
               id: id,
               type: 'messenger-server-inbound',
-              response: answer
+              response: answer,
+              error: error
             };
 
             windowEvents['message']({
@@ -37,7 +40,11 @@ test('it exists', function(assert) {
           }
 
           let question = JSON.parse(payload);
-          respond(question.id, client.answers[question.name]);
+          let error = false;
+          if (question.name === 'not-found') {
+            error = true;
+          }
+          respond(question.id, client.answers[question.name], error);
         }
       },
 
@@ -54,6 +61,10 @@ test('it exists', function(assert) {
 
   client.fetch('parent:my-age-is').then(function(returnedAge) {
     assert.equal(returnedAge, age, 'Age should be 5');
+  });
+
+  client.fetch('parent:not-found').then(null, function(returnedError) {
+    assert.equal(notFound, returnedError, 'It should match the response: 404');
   });
 
   client.addTarget('target-1', {});

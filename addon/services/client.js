@@ -58,7 +58,7 @@ export default Ember.Service.extend(BaseServiceMixin, {
   fetch(question, queryParams) {
     let client = this;
     let uri = client._parseURI(question);
-    return new Ember.RSVP.Promise(function(resolve/*, reject*/) {
+    return new Ember.RSVP.Promise(function(resolve, reject) {
       let id = generateUuid();
       let query = {
         id: id,
@@ -70,10 +70,10 @@ export default Ember.Service.extend(BaseServiceMixin, {
       client.callbacks[id] = {
         success: function(json) {
           run(null, resolve, json);
-        }/* TODO implement,
-        error: function() {
-          Ember.run(null, reject, null);
-        }*/
+        },
+        error: function(json) {
+          run(null, reject, json);
+        }
       };
       client._targetFor(uri.target).postMessage(JSON.stringify(query), '*');
     });
@@ -85,7 +85,11 @@ export default Ember.Service.extend(BaseServiceMixin, {
       if ( question.type === 'messenger-server-inbound' ) {
         let inQueue = this.callbacks[question.id];
         if (inQueue !== null) {
-          inQueue.success(question.response);
+          if (question.error) {
+            inQueue.error(question.response);
+          } else {
+            inQueue.success(question.response);
+          }
         }
       }
     }
