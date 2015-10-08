@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/raido/ember-window-messenger.svg)](https://travis-ci.org/raido/ember-window-messenger)
 [![Code Climate](https://codeclimate.com/github/raido/ember-window-messenger/badges/gpa.svg)](https://codeclimate.com/github/raido/ember-window-messenger)
 [![Test Coverage](https://codeclimate.com/github/raido/ember-window-messenger/badges/coverage.svg)](https://codeclimate.com/github/raido/ember-window-messenger/coverage)
-[![Dependency Status](https://gemnasium.com/raido/ember-window-messenger.svg)](https://gemnasium.com/raido/ember-window-messenger)
+[![Dependency Status](https://david-dm.org/raido/ember-window-messenger.svg)](https://david-dm.org/raido/ember-window-messenger)
 
 This README outlines the details of collaborating on this Ember addon.
 
