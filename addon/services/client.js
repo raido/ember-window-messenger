@@ -49,12 +49,19 @@ export default Ember.Service.extend({
 
   _parseURI(uri) {
     let split = uri.split(':');
-    let resource = split.length > 1 ? split[1] : split[0];
+    let resource = split[1] || split[0];
     return {
-      target: split.length > 1 ? split[0] : 'parent',
+      target: split[1] ? split[0] : 'parent',
       resource: Ember.String.dasherize(resource)
     };
   },
+
+  /**
+   * Determine if resource target is parent or not
+   *
+   * @param  {String}  target
+   * @return {Boolean}
+   */
 
   _isTargetParent(target) {
     let win = this.getWindow();
