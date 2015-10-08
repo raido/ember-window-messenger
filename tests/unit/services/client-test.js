@@ -9,7 +9,7 @@ moduleFor('service:client', 'Unit | Service | Client', {
 test('it exists', function(assert) {
   assert.expect(3);
 
-  let name = "Foo";
+  let name = 'Foo';
   let age = 5;
 
   let windowEvents = {};
@@ -54,10 +54,10 @@ test('it exists', function(assert) {
   assert.ok(client);
 
   client.fetch('parent:my-name-is').then(function(returnedName) {
-    assert.equal(returnedName, name, "Name should be Foo");
+    assert.equal(returnedName, name, 'Name should be Foo');
   });
 
   client.fetch('parent:my-age-is').then(function(returnedAge) {
-    assert.equal(returnedAge, age, "Age should be 5");
+    assert.equal(returnedAge, age, 'Age should be 5');
   });
 });
