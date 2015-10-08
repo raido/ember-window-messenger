@@ -35,9 +35,9 @@ export default Ember.Service.extend(Ember.Evented, {
   },
 
   _parseQuestion(data) {
-      if (typeof data !== 'object') {
-       return JSON.parse(data) || null;
-      }
-      return null;
+    if (typeof data !== 'object') {
+      return JSON.parse(data) || null;
+    }
+    return null;
   }
 });

@@ -11,7 +11,7 @@ var options = {
       outputFile: 'lcov.info',
       renamer: function(moduleName){
         var expression = /^ember-window-messenger/;
-        return moduleName.replace(expression, 'app') + '.js';
+        return moduleName.replace(expression, 'addon') + '.js';
       }
     },
     reporters: ['lcov'],
