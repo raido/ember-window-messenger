@@ -1,6 +1,6 @@
 import { moduleFor, test } from 'ember-qunit';
 
-moduleFor('service:client', 'Unit | Service | Client', {
+moduleFor('service:window-messenger-client', 'Unit | Service | Client', {
   // Specify the other units that are required for this test.
   //needs: ['service:server']
 });
