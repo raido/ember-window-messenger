@@ -14,9 +14,22 @@ export default Ember.Mixin.create({
     return this.get('window');
   },
 
-  _parseQuestion(data) {
-    if (typeof data !== 'object') {
-      return JSON.parse(data) || null;
+  _parseMessage(data) {
+    let message = null;
+    if (typeof data === 'string') {
+      try {
+        message = JSON.parse(data);
+      } catch(e) {/* Ignored */}
+    }
+    return message;
+  },
+
+  _getMessageForType(type, data) {
+    let message = this._parseMessage(data);
+    if (message !== null) {
+      if ( message.type === type ) {
+        return message;
+      }
     }
     return null;
   }

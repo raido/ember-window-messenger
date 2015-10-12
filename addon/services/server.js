@@ -6,7 +6,7 @@ export default Ember.Service.extend(Ember.Evented, BaseServiceMixin, {
   respond(id, answer, event, error) {
     let query = {
       id: id,
-      type: 'messenger-server-inbound',
+      type: 'ember-window-messenger-server',
       response: answer,
       error: error
     };
@@ -14,15 +14,13 @@ export default Ember.Service.extend(Ember.Evented, BaseServiceMixin, {
   },
 
   onMessage(event) {
-    let question = this._parseQuestion(event.data);
-    if (question !== null) {
-      if ( question.type === 'messenger-client-inbound' ) {
-        this.trigger(question.name, (response) => {
-          this.respond(question.id, response, event, false);
-        }, (response) => {
-          this.respond(question.id, response, event, true);
-        }, question.query);
-      }
+    let message = this._getMessageForType('ember-window-messenger-client', event.data);
+    if (message !== null) {
+      this.trigger(message.name, (response) => {
+        this.respond(message.id, response, event, false);
+      }, (response) => {
+        this.respond(message.id, response, event, true);
+      }, message.query);
     }
   }
 });

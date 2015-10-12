@@ -80,7 +80,7 @@ export default Ember.Service.extend(BaseServiceMixin, {
       let id = generateUuid();
       let query = {
         id: id,
-        type: 'messenger-client-inbound',
+        type: 'ember-window-messenger-client',
         name: uri.resource,
         query: queryParams ? queryParams : {}
       };
@@ -98,16 +98,15 @@ export default Ember.Service.extend(BaseServiceMixin, {
   },
 
   onMessage(event) {
-    let question = this._parseQuestion(event.data);
-    if (question !== null) {
-      if ( question.type === 'messenger-server-inbound' ) {
-        let inQueue = this.callbacks[question.id];
-        if (inQueue !== null) {
-          if (question.error) {
-            inQueue.error(question.response);
-          } else {
-            inQueue.success(question.response);
-          }
+    let message = this._getMessageForType('ember-window-messenger-server', event.data);
+
+    if (message !== null) {
+      let inQueue = this.callbacks[message.id];
+      if (inQueue !== null) {
+        if (message.error) {
+          inQueue.error(message.response);
+        } else {
+          inQueue.success(message.response);
         }
       }
     }

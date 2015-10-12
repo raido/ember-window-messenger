@@ -30,7 +30,7 @@ test('it exists', function(assert) {
           function respond(id, answer, error) {
             let query = {
               id: id,
-              type: 'messenger-server-inbound',
+              type: 'ember-window-messenger-server',
               response: answer,
               error: error
             };
