@@ -29,7 +29,8 @@ export default Ember.Route.extend({
       resolve('Some data');
     });
   }
-});```
+});
+```
 
 #### Fetch from parent
 
@@ -42,7 +43,8 @@ export default Ember.Route.extend({
   model() {
     return this.get('client').fetch('demo-data');
   }
-});```
+});
+```
 
 #### Execute RPC call
 
@@ -61,7 +63,8 @@ export default Ember.Route.extend({
       });
     }
   }
-});```
+});
+```
 
 ## Installation
 
