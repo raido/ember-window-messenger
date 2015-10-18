@@ -4,6 +4,7 @@ const { run } = Ember;
 
 export default Ember.Mixin.create({
   window: null,
+  targetOriginMap: null,
 
   init() {
     this._super(...arguments);
@@ -12,6 +13,26 @@ export default Ember.Mixin.create({
 
   getWindow() {
     return this.get('window');
+  },
+
+  /**
+   * Check if message origin is allowed
+   *
+   * @param  {String}  origin
+   * @private
+   * @return {Boolean}
+   */
+
+  _isOriginAllowed(origin) {
+    let map = this.get('targetOriginMap');
+    let targets = Object.keys(map);
+    let origins = Ember.A();
+    targets.forEach((target) => {
+      if (map.hasOwnProperty(target)) {
+        origins.push(map[target]);
+      }
+    });
+    return origins.indexOf(origin) !== -1;
   },
 
   _parseMessage(data) {
@@ -24,11 +45,13 @@ export default Ember.Mixin.create({
     return message;
   },
 
-  _getMessageForType(type, data) {
-    let message = this._parseMessage(data);
-    if (message !== null) {
-      if (message.type === type) {
-        return message;
+  _getMessageForType(type, event) {
+    if (this._isOriginAllowed(event.origin)) {
+      let message = this._parseMessage(event.data);
+      if (message !== null) {
+        if (message.type === type) {
+          return message;
+        }
       }
     }
     return null;

@@ -14,7 +14,7 @@ export default Ember.Service.extend(Ember.Evented, BaseServiceMixin, {
   },
 
   onMessage(event) {
-    let message = this._getMessageForType('ember-window-messenger-client', event.data);
+    let message = this._getMessageForType('ember-window-messenger-client', event);
     if (message !== null) {
       this.trigger(message.name, (response) => {
         this.respond(message.id, response, event, false);

@@ -7,7 +7,6 @@ const { run } = Ember;
 export default Ember.Service.extend(BaseServiceMixin, {
   callbacks: {},
   targets: {},
-  targetOriginMap: null,
 
   /**
    * Add new contentWindow target
@@ -101,7 +100,7 @@ export default Ember.Service.extend(BaseServiceMixin, {
   },
 
   onMessage(event) {
-    let message = this._getMessageForType('ember-window-messenger-server', event.data);
+    let message = this._getMessageForType('ember-window-messenger-server', event);
 
     if (message !== null) {
       let inQueue = this.callbacks[message.id];

@@ -26,7 +26,7 @@ test('it exists', function(assert) {
     },
     window: {
       parent: {
-        postMessage: (payload) => {
+        postMessage: (payload, targetOrigin) => {
           function respond(uuid, responsePayload, hasError) {
             let query = {
               id: uuid,
@@ -37,7 +37,7 @@ test('it exists', function(assert) {
 
             windowEvents.message({
               data: JSON.stringify(query),
-              origin: null,
+              origin: targetOrigin,
               source: null
             });
           }

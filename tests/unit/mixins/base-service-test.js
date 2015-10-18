@@ -14,21 +14,41 @@ test('it works', function(assert) {
   };
 
   let subject = BaseServiceObject.create({
-    window: win
+    window: win,
+    targetOriginMap: {
+      'target-1': 'http://localhost:4200'
+    }
   });
 
   assert.ok(subject);
 
-  assert.equal(null, subject._parseMessage({}), 'It should return null');
+  assert.equal(subject._parseMessage({}), null, 'It should return null');
   assert.ok(subject._parseMessage('{}'), 'It should return empty object');
   assert.equal(win, subject.getWindow(), 'It should match, window objects');
 
-  let message = subject._getMessageForType('my-type', '{ "type": "my-type" }');
+  let message = subject._getMessageForType('my-type', {
+    origin: 'http://localhost:4200',
+    data: '{ "type": "my-type" }'
+  });
   assert.ok(message, 'It should return message for the type');
 
-  let messageNotExisting = subject._getMessageForType('my-type-not-existing', '{ "type": "my-type" }');
-  assert.equal(null, messageNotExisting, 'It should return null for non matching type');
+  let messageNotExisting = subject._getMessageForType('my-type-not-existing', {
+    origin: 'http://localhost:4200',
+    data: '{ "type": "my-type" }'
+  });
+  assert.equal(messageNotExisting, null, 'It should return null for non matching type');
 
-  let unparseableMessage = subject._getMessageForType('my-type-unparseable', '');
-  assert.equal(null, unparseableMessage, 'It should return null for non parseable message');
+  let unparseableMessage = subject._getMessageForType('my-type-unparseable', {
+    origin: 'http://localhost:4200',
+    data: ''
+  });
+  assert.equal(unparseableMessage, null, 'It should return null for non parseable message');
+
+  let notAllowedOrigin = subject._getMessageForType('my-type', {
+    origin: 'http://random.host',
+    data: '{ "type": "my-type" }'
+  });
+  assert.equal(notAllowedOrigin, null, 'It should return null for not allowed origin');
+
+  assert.ok(subject._isOriginAllowed('http://localhost:4200'), 'Origin should be allowed');
 });
