@@ -1,12 +1,70 @@
-# [WIP] Ember Window Messenger
+# ember-window-messenger
 
 [![Build Status](https://travis-ci.org/raido/ember-window-messenger.svg)](https://travis-ci.org/raido/ember-window-messenger)
 [![Code Climate](https://codeclimate.com/github/raido/ember-window-messenger/badges/gpa.svg)](https://codeclimate.com/github/raido/ember-window-messenger)
 [![Test Coverage](https://codeclimate.com/github/raido/ember-window-messenger/badges/coverage.svg)](https://codeclimate.com/github/raido/ember-window-messenger/coverage)
-[![Dependency Status](https://david-dm.org/raido/ember-window-messenger.svg)](https://david-dm.org/raido/ember-window-messenger)
-[![devDependency Status](https://david-dm.org/raido/ember-window-messenger/dev-status.svg)](https://david-dm.org/raido/ember-window-messenger/#info=devDependencies)
 
-This README outlines the details of collaborating on this Ember addon.
+This Ember addon is a lightweight postMessage client/server implementation. It is built on promises so the `fetch` and `rpc` methods can used directly in your route `model()` hooks.
+
+**It supports JSON only messages for now**
+
+## Usage
+
+`ember install ember-window-messenger`
+
+### Examples
+
+If dare, fire up the dummy app in this addon and test it out. Below are the basic examples, see dummy app for more.
+
+#### Setup server on parent
+
+`javascript
+import Ember from 'ember';
+
+export default Ember.Route.extend({
+  server: Ember.inject.service('window-messenger-server'),
+
+  beforeModel() {
+    server.on('demo-data' (resolve, reject, query) => {
+      resolve('Some data');
+    });
+  }
+});
+`
+
+#### Fetch from parent
+
+`javascript
+import Ember from 'ember';
+
+export default Ember.Route.extend({
+  client: Ember.inject.service('window-messenger-client'),
+
+  model() {
+    return this.get('client').fetch('demo-data');
+  }
+});
+`
+
+#### Execute RPC call
+
+Internally it is the same as `fetch`, but provides semantic sugar to your app code.
+
+`javascript
+import Ember from 'ember';
+
+export default Ember.Route.extend({
+  client: Ember.inject.service('window-messenger-client'),
+
+  actions {
+    runMe() {
+      this.get('client').rpc('start-worker').then((response) => {
+        // handle response here
+      });
+    }
+  }
+});
+`
 
 ## Installation
 
