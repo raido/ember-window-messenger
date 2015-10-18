@@ -18,8 +18,7 @@ If dare, fire up the dummy app in this addon and test it out. Below are the basi
 
 #### Setup server on parent
 
-`javascript
-import Ember from 'ember';
+`import Ember from 'ember';
 
 export default Ember.Route.extend({
   server: Ember.inject.service('window-messenger-server'),
@@ -29,13 +28,11 @@ export default Ember.Route.extend({
       resolve('Some data');
     });
   }
-});
-`
+});`
 
 #### Fetch from parent
 
-`javascript
-import Ember from 'ember';
+`import Ember from 'ember';
 
 export default Ember.Route.extend({
   client: Ember.inject.service('window-messenger-client'),
@@ -43,15 +40,13 @@ export default Ember.Route.extend({
   model() {
     return this.get('client').fetch('demo-data');
   }
-});
-`
+});`
 
 #### Execute RPC call
 
 Internally it is the same as `fetch`, but provides semantic sugar to your app code.
 
-`javascript
-import Ember from 'ember';
+`import Ember from 'ember';
 
 export default Ember.Route.extend({
   client: Ember.inject.service('window-messenger-client'),
@@ -63,8 +58,7 @@ export default Ember.Route.extend({
       });
     }
   }
-});
-`
+});`
 
 ## Installation
 
