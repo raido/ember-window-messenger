@@ -6,6 +6,8 @@
 
 This Ember addon is a lightweight postMessage client/server implementation. It is built on promises so the `fetch` and `rpc` methods can used directly in your route `model()` hooks.
 
+For changelog see [CHANGES.md](CHANGES.md)
+
 **It supports JSON only messages for now**
 
 ## Usage
