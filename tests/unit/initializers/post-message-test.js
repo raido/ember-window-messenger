@@ -1,11 +1,11 @@
 import Ember from 'ember';
-import { initialize } from '../../../initializers/post-message';
+import { injectGlobalWindow } from '../../../initializers/post-message';
 import { module, test } from 'qunit';
 
-var registry, application;
+let registry, application;
 
 module('Unit | Initializer | post message', {
-  beforeEach: function() {
+  beforeEach() {
     Ember.run(function() {
       application = Ember.Application.create();
       registry = application.registry;
@@ -16,7 +16,7 @@ module('Unit | Initializer | post message', {
 
 // Replace this with your real tests.
 test('it works', function(assert) {
-  initialize(registry, application);
+  injectGlobalWindow(registry, application);
 
   // you would normally confirm the results of the initializer here
   assert.ok(true);

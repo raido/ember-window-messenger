@@ -6,14 +6,14 @@ module('Unit | Mixin | base service');
 
 // Replace this with your real tests.
 test('it works', function(assert) {
-  var BaseServiceObject = Ember.Object.extend(BaseServiceMixin);
-  var win = {
+  let BaseServiceObject = Ember.Object.extend(BaseServiceMixin);
+  let win = {
     addEventListener(event) {
       assert.equal('message', event, 'It should register message event listener');
     }
   };
 
-  var subject = BaseServiceObject.create({
+  let subject = BaseServiceObject.create({
     window: win
   });
 

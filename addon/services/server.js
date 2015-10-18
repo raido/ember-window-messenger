@@ -3,12 +3,12 @@ import BaseServiceMixin from '../mixins/base-service';
 
 export default Ember.Service.extend(Ember.Evented, BaseServiceMixin, {
 
-  respond(id, answer, event, error) {
+  respond(uuid, payload, event, hasError) {
     let query = {
-      id: id,
+      id: uuid,
       type: 'ember-window-messenger-server',
-      response: answer,
-      error: error
+      response: payload,
+      error: hasError
     };
     event.source.postMessage(JSON.stringify(query), event.origin);
   },

@@ -1,4 +1,4 @@
-export function initialize() {
+export function injectGlobalWindow() {
   let application = arguments[1] || arguments[0];
   application.register('window:main', window, { instantiate: false });
   application.inject('service', 'window', 'window:main');
@@ -6,5 +6,5 @@ export function initialize() {
 
 export default {
   name: 'post-message',
-  initialize: initialize
+  initialize: injectGlobalWindow
 };

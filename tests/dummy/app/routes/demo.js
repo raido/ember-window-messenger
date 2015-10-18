@@ -26,7 +26,7 @@ export default Ember.Route.extend({
     },
 
     openPopup() {
-      let win = window.open('/client-server-two/example');
+      let win = window.open('/client-server-two/example', 'Example popup', 'toolbar=no,resizable=no,width=400,height=400');
       this.get('client').addTarget('popup', win);
       this.controller.set('popup', true);
     },

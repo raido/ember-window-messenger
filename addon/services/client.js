@@ -14,6 +14,7 @@ export default Ember.Service.extend(BaseServiceMixin, {
    *
    * @param {String} name         String name of the target
    * @param {contentWindow} targetWindow DOM contentWindow
+   * @public
    */
 
   addTarget(name, targetWindow) {
@@ -24,6 +25,7 @@ export default Ember.Service.extend(BaseServiceMixin, {
    * Remove contentWindow target
    *
    * @param  {String} name
+   * @public
    */
 
   removeTarget(name) {
@@ -43,6 +45,7 @@ export default Ember.Service.extend(BaseServiceMixin, {
    * Determine if resource target is parent or not
    *
    * @param  {String}  target
+   * @private
    * @return {Boolean}
    */
 
@@ -62,7 +65,7 @@ export default Ember.Service.extend(BaseServiceMixin, {
   },
 
   _targetOriginFor(target) {
-    return this.get('targetOriginMap.' + target);
+    return this.get(`targetOriginMap.${target}`);
   },
 
   fetch(question, queryParams) {
@@ -71,25 +74,25 @@ export default Ember.Service.extend(BaseServiceMixin, {
     let targetName = uri.target;
 
     let targetOrigin = client._targetOriginFor(targetName);
-    Ember.assert('Target origin for target: ' + targetName + ' does not exist', targetOrigin);
+    Ember.assert(`Target origin for target: ${targetName} does not exist`, targetOrigin);
 
     let target = client._targetFor(targetName);
-    Ember.assert('Target window is not registered for: ' + targetName, target);
+    Ember.assert(`Target window is not registered for: ${targetName}`, target);
 
     return new Ember.RSVP.Promise(function(resolve, reject) {
-      let id = generateUuid();
+      let uuid = generateUuid();
       let query = {
-        id: id,
+        id: uuid,
         type: 'ember-window-messenger-client',
         name: uri.resource,
         query: queryParams ? queryParams : {}
       };
 
-      client.callbacks[id] = {
-        success: function(json) {
+      client.callbacks[uuid] = {
+        success: (json) => {
           run(null, resolve, json);
         },
-        error: function(json) {
+        error: (json) => {
           run(null, reject, json);
         }
       };

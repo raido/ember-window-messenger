@@ -7,9 +7,9 @@ moduleFor('service:window-messenger-server', 'Unit | Service | server', {
 
 // Replace this with your real tests.
 test('it exists', function(assert) {
-  var service = this.subject({
+  let service = this.subject({
     window: {
-      addEventListener: function(/*event, callback*/) {
+      addEventListener: (/*event, callback*/) => {
 
       }
     }

@@ -2,7 +2,7 @@ import { moduleFor, test } from 'ember-qunit';
 
 moduleFor('service:window-messenger-client', 'Unit | Service | Client', {
   // Specify the other units that are required for this test.
-  //needs: ['service:server']
+  // needs: ['service:server']
 });
 
 // Replace this with your real tests.
@@ -15,7 +15,7 @@ test('it exists', function(assert) {
 
   let windowEvents = {};
 
-  var client = this.subject({
+  let client = this.subject({
     targetOriginMap: {
       parent: '*'
     },
@@ -26,16 +26,16 @@ test('it exists', function(assert) {
     },
     window: {
       parent: {
-        postMessage: function(payload) {
-          function respond(id, answer, error) {
+        postMessage: (payload) => {
+          function respond(uuid, responsePayload, hasError) {
             let query = {
-              id: id,
+              id: uuid,
               type: 'ember-window-messenger-server',
-              response: answer,
-              error: error
+              response: responsePayload,
+              error: hasError
             };
 
-            windowEvents['message']({
+            windowEvents.message({
               data: JSON.stringify(query),
               origin: null,
               source: null
@@ -51,7 +51,7 @@ test('it exists', function(assert) {
         }
       },
 
-      addEventListener: function(event, callback) {
+      addEventListener: (event, callback) => {
         windowEvents[event] = callback;
       }
     }
@@ -67,7 +67,7 @@ test('it exists', function(assert) {
   });
 
   client.fetch('parent:not-found').then(null, function(returnedError) {
-    assert.equal(notFound, returnedError, 'It should match the response: 404');
+    assert.equal(returnedError, notFound, 'It should match the response: 404');
   });
 
   client.addTarget('target-1', {});

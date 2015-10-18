@@ -1,1 +1,1 @@
-export { default, initialize } from 'ember-window-messenger/initializers/post-message';
+export { default, injectGlobalWindow } from 'ember-window-messenger/initializers/post-message';

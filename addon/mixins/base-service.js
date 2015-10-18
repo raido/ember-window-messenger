@@ -27,7 +27,7 @@ export default Ember.Mixin.create({
   _getMessageForType(type, data) {
     let message = this._parseMessage(data);
     if (message !== null) {
-      if ( message.type === type ) {
+      if (message.type === type) {
         return message;
       }
     }

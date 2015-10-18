@@ -16,7 +16,7 @@ export default Ember.Route.extend({
         this.controller.set('model', JSON.stringify(response));
       });
     },
-    
+
     askParentFail() {
       this.get('client').fetch('demo-data', { action: 'nope' }).catch((response) => {
         this.controller.set('model', response);
