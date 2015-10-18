@@ -3,6 +3,7 @@ import BaseServiceMixin from '../mixins/base-service';
 import generateUuid from '../utils/generate-uuid';
 
 const { run } = Ember;
+const { aliasMethod } = Ember;
 
 export default Ember.Service.extend(BaseServiceMixin, {
   callbacks: {},
@@ -98,6 +99,13 @@ export default Ember.Service.extend(BaseServiceMixin, {
       target.postMessage(JSON.stringify(query), targetOrigin);
     });
   },
+
+  /**
+   * Alias to fetch method, for providing semantic sugar
+   *
+   * @public
+   */
+  rpc: aliasMethod('fetch'),
 
   onMessage(event) {
     let message = this._getMessageForType('ember-window-messenger-server', event);

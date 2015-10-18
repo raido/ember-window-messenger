@@ -7,11 +7,12 @@ moduleFor('service:window-messenger-client', 'Unit | Service | Client', {
 
 // Replace this with your real tests.
 test('it exists', function(assert) {
-  assert.expect(6);
+  assert.expect(7);
 
   let name = 'Foo';
   let age = 5;
   let notFound = 404;
+  let rpc = 200;
 
   let windowEvents = {};
 
@@ -22,7 +23,8 @@ test('it exists', function(assert) {
     answers: {
       'my-name-is': name,
       'my-age-is': age,
-      'not-found': notFound
+      'not-found': notFound,
+      'rpc-run': rpc
     },
     window: {
       parent: {
@@ -68,6 +70,10 @@ test('it exists', function(assert) {
 
   client.fetch('parent:not-found').then(null, function(returnedError) {
     assert.equal(returnedError, notFound, 'It should match the response: 404');
+  });
+
+  client.rpc('parent:rpc-run').then(function(statusCode) {
+    assert.equal(statusCode, rpc, 'RPC status code should match');
   });
 
   client.addTarget('target-1', {});
