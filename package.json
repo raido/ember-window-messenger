@@ -1,6 +1,6 @@
 {
   "name": "ember-window-messenger",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Simple window postMessage Ember addon",
   "directories": {
     "doc": "doc",
@@ -43,7 +43,9 @@
     "eslint": "^1.6.0"
   },
   "keywords": [
-    "ember-addon"
+    "ember-addon",
+    "postMessage",
+    "communication"
   ],
   "dependencies": {
     "ember-cli-babel": "^5.0.0"
