@@ -6,8 +6,8 @@ moduleFor('service:window-messenger-client', 'Unit | Service | Client', {
 });
 
 // Replace this with your real tests.
-test('it exists', function(assert) {
-  assert.expect(7);
+test('It works', function(assert) {
+  assert.expect(8);
 
   let name = 'Foo';
   let age = 5;
@@ -24,7 +24,10 @@ test('it exists', function(assert) {
       'my-name-is': name,
       'my-age-is': age,
       'not-found': notFound,
-      'rpc-run': rpc
+      'rpc-run': rpc,
+      'json-object': {
+        key: 'json'
+      }
     },
     window: {
       parent: {
@@ -62,6 +65,10 @@ test('it exists', function(assert) {
 
   client.fetch('parent:my-name-is').then(function(returnedName) {
     assert.equal(returnedName, name, 'Name should be Foo');
+  });
+
+  client.fetch('parent:json-object').then(function(obj) {
+    assert.equal(obj.key, 'json', 'It should be an object with key field');
   });
 
   client.fetch('parent:my-age-is').then(function(returnedAge) {
