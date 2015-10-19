@@ -13,8 +13,6 @@
 # http://docs.codeclimate.com/article/296-engines-available-engines
 
 engines:
-  eslint:
-    enabled: true
   csslint:
     enabled: true
 
