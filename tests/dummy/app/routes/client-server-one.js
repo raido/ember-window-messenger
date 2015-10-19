@@ -4,7 +4,9 @@ export default Ember.Route.extend({
   client: Ember.inject.service('window-messenger-client'),
   server: Ember.inject.service('window-messenger-server'),
 
-  beforeModel() {
+  init() {
+    this._super.apply(...arguments);
+
     this.get('server').on('name', (resolve) => {
       resolve('My name is: Target 1 - client/server one');
     });

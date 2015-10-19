@@ -4,7 +4,9 @@ export default Ember.Route.extend({
   server: Ember.inject.service('window-messenger-server'),
   client: Ember.inject.service('window-messenger-client'),
 
-  beforeModel() {
+  init() {
+    this._super.apply(...arguments);
+
     this.get('server').on('demo-data', (resolve, reject, query) => {
       this.controller.set('model', JSON.stringify(query));
       if (query.action === 'nope') {
