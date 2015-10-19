@@ -2,8 +2,7 @@ import Ember from 'ember';
 import BaseServiceMixin from '../mixins/base-service';
 import generateUuid from '../utils/generate-uuid';
 
-const { run } = Ember;
-const { aliasMethod } = Ember;
+const { run, aliasMethod } = Ember;
 
 export default Ember.Service.extend(BaseServiceMixin, {
   callbacks: {},
