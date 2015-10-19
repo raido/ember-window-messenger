@@ -6,7 +6,7 @@
 
 This Ember addon is a lightweight postMessage client/server implementation. It is built on promises so the `fetch` and `rpc` methods can used directly in your route `model()` hooks.
 
-For changelog see [CHANGES.md](CHANGES.md)
+For changelog see [CHANGES.md](https://github.com/raido/ember-window-messenger/blob/master/CHANGES.md)
 
 **It supports JSON only messages for now**
 
@@ -14,9 +14,28 @@ For changelog see [CHANGES.md](CHANGES.md)
 
 `ember install ember-window-messenger`
 
+#### Configuration
+
+Add `target:origin` map to your `config/environment.js`. This effectively defines which targets (windows, frames) is your app communicating with.
+
+```javascript
+APP: {
+  // Here you can pass flags/options to your application instance
+  // when it is created
+  'ember-window-messenger': {
+    'parent': 'http://localhost:4200',
+    'target-1': 'http://localhost:4200',
+    'target-2': 'http://localhost:4200',
+    'popup': 'http://localhost:4200'
+  }
+}
+```
+
+This list is also used for validation, to check if message comes from an allowed origin.
+
 ### Examples
 
-If dare, fire up the dummy app in this addon and test it out. Below are the basic examples, see dummy app for more.
+If you dare, fire up the dummy app in this addon and test it out. Below are the basic examples, see dummy app for more.
 
 #### Setup server on parent
 
@@ -26,7 +45,9 @@ import Ember from 'ember';
 export default Ember.Route.extend({
   server: Ember.inject.service('window-messenger-server'),
 
-  beforeModel() {
+  init() {
+    this._super.apply(...arguments);
+
     server.on('demo-data' (resolve, reject, query) => {
       resolve('Some data');
     });
@@ -44,6 +65,22 @@ export default Ember.Route.extend({
 
   model() {
     return this.get('client').fetch('demo-data');
+  }
+});
+```
+
+#### Fetch from a specific target
+
+This can be used from parent window to frames/tabs communication.
+
+```javascript
+import Ember from 'ember';
+
+export default Ember.Route.extend({
+  client: Ember.inject.service('window-messenger-client'),
+
+  model() {
+    return this.get('client').fetch('popup:demo-data');
   }
 });
 ```
