@@ -48,7 +48,7 @@ export default Ember.Route.extend({
   init() {
     this._super.apply(...arguments);
 
-    server.on('demo-data' (resolve, reject, query) => {
+    server.on('demo-data', (resolve, reject, query) => {
       resolve('Some data');
     });
   }
