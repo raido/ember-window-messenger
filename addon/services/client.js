@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import BaseServiceMixin from '../mixins/base-service';
-import generateUuid from '../utils/generate-uuid';
+import { v4 } from 'ember-uuid';
 
 const { run, aliasMethod } = Ember;
 
@@ -79,7 +79,7 @@ export default Ember.Service.extend(BaseServiceMixin, {
     Ember.assert(`Target window is not registered for: ${targetName}`, target);
 
     return new Ember.RSVP.Promise(function(resolve, reject) {
-      let uuid = generateUuid();
+      let uuid = v4();
       let query = {
         id: uuid,
         type: 'ember-window-messenger-client',
