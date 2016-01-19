@@ -45,9 +45,9 @@ export default Ember.Route.extend({
   server: Ember.inject.service('window-messenger-server'),
 
   init() {
-    this._super.apply(...arguments);
+    this._super(...arguments);
 
-    server.on('demo-data', (resolve, reject, query) => {
+    this.get('server').on('demo-data', (resolve, reject, query) => {
       resolve('Some data');
     });
   }
