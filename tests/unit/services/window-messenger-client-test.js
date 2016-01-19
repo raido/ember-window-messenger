@@ -58,6 +58,10 @@ test('It works', function(assert) {
 
       addEventListener: (event, callback) => {
         windowEvents[event] = callback;
+      },
+
+      removeEventListener: (event) => {
+        delete windowEvents[event];
       }
     }
   });

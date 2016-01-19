@@ -2,6 +2,8 @@ import Ember from 'ember';
 import BaseServiceMixin from 'ember-window-messenger/mixins/base-service';
 import { module, test } from 'qunit';
 
+const { run } = Ember;
+
 module('Unit | Mixin | base service');
 
 // Replace this with your real tests.
@@ -10,6 +12,9 @@ test('it works', function(assert) {
   let win = {
     addEventListener(event) {
       assert.equal('message', event, 'It should register message event listener');
+    },
+    removeEventListener(event) {
+      assert.equal('message', event, 'It should de-register message event listener');
     }
   };
 
@@ -51,4 +56,7 @@ test('it works', function(assert) {
   assert.equal(notAllowedOrigin, null, 'It should return null for not allowed origin');
 
   assert.ok(subject._isOriginAllowed('http://localhost:4200'), 'Origin should be allowed');
+  run(null, () => {
+    subject.destroy();
+  });
 });

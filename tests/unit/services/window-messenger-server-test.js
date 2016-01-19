@@ -17,6 +17,10 @@ test('It works', function(assert) {
     window: {
       addEventListener: (/*event, callback*/) => {
 
+      },
+
+      removeEventListener: () => {
+
       }
     }
   });

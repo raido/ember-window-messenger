@@ -3,12 +3,13 @@ import Ember from 'ember';
 const { run } = Ember;
 
 export default Ember.Mixin.create({
-  window: null,
+  window,
   targetOriginMap: null,
+  eventListener: null,
 
   init() {
     this._super(...arguments);
-    this.getWindow().addEventListener('message', run.bind(this, 'onMessage'));
+    this.getWindow().addEventListener('message', this.set('eventListener', run.bind(this, 'onMessage')));
   },
 
   getWindow() {
@@ -55,5 +56,11 @@ export default Ember.Mixin.create({
       }
     }
     return null;
+  },
+
+  willDestroy() {
+    // Remove event listener when this service is getting destroyed
+    this.getWindow().removeEventListener('message', this.get('eventListener'));
+    this._super(...arguments);
   }
 });
