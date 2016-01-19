@@ -7,6 +7,7 @@ var options = {
   antifilter: '//.*(tests|template).*/',
   loaderExclusions: [],
   enableCoverage: true,
+  branchTracking: true,
   cliOptions: {
     lcovOptions: {
       outputFile: 'lcov.info',
