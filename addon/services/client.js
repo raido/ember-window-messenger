@@ -67,9 +67,9 @@ export default Ember.Service.extend(BaseServiceMixin, {
     return this.get(`targetOriginMap.${target}`);
   },
 
-  fetch(question, queryParams) {
+  fetch(path, queryParams) {
     let client = this;
-    let uri = client._parseURI(question);
+    let uri = client._parseURI(path);
     let targetName = uri.target;
 
     let targetOrigin = client._targetOriginFor(targetName);
@@ -96,7 +96,7 @@ export default Ember.Service.extend(BaseServiceMixin, {
         }
       };
       target.postMessage(JSON.stringify(query), targetOrigin);
-    });
+    }, `ember-window-messenger: ${path}`);
   },
 
   /**
