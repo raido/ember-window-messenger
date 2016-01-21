@@ -1,3 +1,15 @@
+## v0.2.1
+
+* Add promise label for better instrumentation with Ember Inspector
+
+## v0.2.0
+
+* Migrate to ember-uuid.
+* Remove initializer
+* Update toolset
+* Update docs
+* Fix breaking unit testing in consuming app
+
 ## v0.1.1
 
 * Refactoring
