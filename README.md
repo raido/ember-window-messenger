@@ -104,6 +104,54 @@ export default Ember.Route.extend({
 });
 ```
 
+### iFrames, popup windows
+
+If you want to communicate with an iframe or a popup window opened with `window.open`, then you have to register your window instance on the client with matching target name from `config/environment` map.
+
+#### iFrame
+
+```javascript
+// app/components/x-frame.js
+import Ember from 'ember';
+
+export default Ember.Component.extend({
+  client: Ember.inject.service('window-messenger-client'),
+  target: null
+
+  didInsertElement() {
+    this.get('client').addTarget('target-1', this.$().get(0).contentWindow);
+  },
+
+  willDestroyElement() {
+    this.get('client').removeTarget('target-1');
+  }
+});
+
+```
+#### Popup with window.open
+
+```javascript
+// app/components/x-frame.js
+import Ember from 'ember';
+
+export default Ember.Route.extend({
+  client: Ember.inject.service('window-messenger-client'),
+
+  actions: {
+    openPopup() {
+      let win = window.open('/some/path', 'Example popup', 'toolbar=no,resizable=no,width=400,height=400');
+      this.get('client').addTarget('popup', win);
+    },
+
+    fetchFromPopup() {
+      this.get('client').fetch('popup:some-data').then((name) => {
+        this.controller.set('model', name);
+      });
+    }
+  }
+});
+```
+
 ## Installation
 
 * `git clone` this repository
