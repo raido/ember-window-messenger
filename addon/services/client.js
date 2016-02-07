@@ -1,8 +1,7 @@
 import Ember from 'ember';
 import BaseServiceMixin from '../mixins/base-service';
-import { v4 } from 'ember-uuid';
 
-const { run, aliasMethod } = Ember;
+const { run, aliasMethod, guidFor } = Ember;
 
 export default Ember.Service.extend(BaseServiceMixin, {
   callbacks: {},
@@ -71,6 +70,7 @@ export default Ember.Service.extend(BaseServiceMixin, {
     let client = this;
     let uri = client._parseURI(path);
     let targetName = uri.target;
+    let queryObject = queryParams ? queryParams : {};
 
     let targetOrigin = client._targetOriginFor(targetName);
     Ember.assert(`Target origin for target: ${targetName} does not exist`, targetOrigin);
@@ -79,12 +79,12 @@ export default Ember.Service.extend(BaseServiceMixin, {
     Ember.assert(`Target window is not registered for: ${targetName}`, target);
 
     return new Ember.RSVP.Promise(function(resolve, reject) {
-      let uuid = v4();
+      let uuid = guidFor(queryObject);
       let query = {
         id: uuid,
         type: 'ember-window-messenger-client',
         name: uri.resource,
-        query: queryParams ? queryParams : {}
+        query: queryObject
       };
 
       client.callbacks[uuid] = {

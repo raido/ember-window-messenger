@@ -1,4 +1,5 @@
 import { moduleFor, test } from 'ember-qunit';
+import Ember from 'ember';
 
 moduleFor('service:window-messenger-client', 'Unit | Service | Client', {
   // Specify the other units that are required for this test.
@@ -7,7 +8,7 @@ moduleFor('service:window-messenger-client', 'Unit | Service | Client', {
 
 // Replace this with your real tests.
 test('It works', function(assert) {
-  assert.expect(8);
+  assert.expect(13);
 
   let name = 'Foo';
   let age = 5;
@@ -15,6 +16,7 @@ test('It works', function(assert) {
   let rpc = 200;
 
   let windowEvents = {};
+  let generatedUuids = Ember.A([]);
 
   let client = this.subject({
     targetOriginMap: {
@@ -39,6 +41,10 @@ test('It works', function(assert) {
               response: responsePayload,
               error: hasError
             };
+
+            // Test that each fetch runs with unique ID
+            assert.equal(generatedUuids.contains(uuid), false, 'it should not have duplicate uuids');
+            generatedUuids.push(uuid);
 
             windowEvents.message({
               data: JSON.stringify(query),
