@@ -67,18 +67,17 @@ export default Ember.Service.extend(BaseServiceMixin, {
   },
 
   fetch(path, queryParams) {
-    let client = this;
-    let uri = client._parseURI(path);
+    let uri = this._parseURI(path);
     let targetName = uri.target;
     let queryObject = queryParams ? queryParams : {};
 
-    let targetOrigin = client._targetOriginFor(targetName);
+    let targetOrigin = this._targetOriginFor(targetName);
     Ember.assert(`Target origin for target: ${targetName} does not exist`, targetOrigin);
 
-    let target = client._targetFor(targetName);
+    let target = this._targetFor(targetName);
     Ember.assert(`Target window is not registered for: ${targetName}`, target);
 
-    return new Ember.RSVP.Promise(function(resolve, reject) {
+    return new Ember.RSVP.Promise((resolve, reject) => {
       let uuid = guidFor(queryObject);
       let query = {
         id: uuid,
@@ -87,7 +86,7 @@ export default Ember.Service.extend(BaseServiceMixin, {
         query: queryObject
       };
 
-      client.callbacks[uuid] = {
+      this.callbacks[uuid] = {
         success: (json) => {
           run(null, resolve, json);
         },
@@ -110,12 +109,18 @@ export default Ember.Service.extend(BaseServiceMixin, {
     let message = this._getMessageForType('ember-window-messenger-server', event);
 
     if (message !== null) {
-      let inQueue = this.callbacks[message.id];
-      if (inQueue !== null) {
-        if (message.error) {
-          inQueue.error(message.response);
+      const { response, id, error } = message;
+      let inQueue = this.callbacks[id];
+      // remove it from the queue right away, because otherwise RSVP catch handler
+      // will interfare the code path here and doing delete in the end of
+      // if condition below would simply not run when "error" === true
+      delete this.callbacks[id];
+
+      if (Ember.typeOf(inQueue) === 'object') {
+        if (error) {
+          inQueue.error(response);
         } else {
-          inQueue.success(message.response);
+          inQueue.success(response);
         }
       }
     }

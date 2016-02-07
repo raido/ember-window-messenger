@@ -8,7 +8,7 @@ moduleFor('service:window-messenger-client', 'Unit | Service | Client', {
 
 // Replace this with your real tests.
 test('It works', function(assert) {
-  assert.expect(13);
+  assert.expect(14);
 
   let name = 'Foo';
   let age = 5;
@@ -98,4 +98,7 @@ test('It works', function(assert) {
 
   client.removeTarget('target-1');
   assert.equal(null, client.get('targets.target-1'), 'There should not be a target');
+
+  // Make sure that there are no callback left in the queue which would be a memory leak
+  assert.deepEqual(client.get('callbacks'), {}, 'there should be no callbacks left');
 });
