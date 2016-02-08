@@ -1,3 +1,15 @@
+# ember-window-messenger
+
+## v0.3.0 - 2016-02-08
+
+### Changed
+
+* Update dependencies
+
+### Removed
+
+* `ember-uuid` dependency, in favor of Ember's `guidFor` and keeping it simple
+
 ## v0.2.1 - 2016-01-20
 
 ### Added
