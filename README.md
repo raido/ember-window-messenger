@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/raido/ember-window-messenger.svg)](https://travis-ci.org/raido/ember-window-messenger)
 [![Code Climate](https://codeclimate.com/github/raido/ember-window-messenger/badges/gpa.svg)](https://codeclimate.com/github/raido/ember-window-messenger)
+[![npm version](https://badge.fury.io/js/ember-window-messenger.svg)](https://badge.fury.io/js/ember-window-messenger)
+![npm version](https://embadge.io/v1/badge.svg?start=1.13.0)
 
 This Ember addon is a lightweight postMessage client/server implementation. It is built on promises so the `fetch` and `rpc` methods can used directly in your route `model()` hooks.
 
@@ -116,7 +118,6 @@ import Ember from 'ember';
 
 export default Ember.Component.extend({
   client: Ember.inject.service('window-messenger-client'),
-  target: null
 
   didInsertElement() {
     this.get('client').addTarget('target-1', this.$().get(0).contentWindow);
@@ -131,7 +132,7 @@ export default Ember.Component.extend({
 #### Popup with window.open
 
 ```javascript
-// app/components/x-frame.js
+// app/routes/my-route.js
 import Ember from 'ember';
 
 export default Ember.Route.extend({
