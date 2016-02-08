@@ -1,6 +1,6 @@
 import Ember from 'ember';
 
-const { run } = Ember;
+const { run, set } = Ember;
 
 export default Ember.Mixin.create({
   window,
@@ -9,7 +9,8 @@ export default Ember.Mixin.create({
 
   init() {
     this._super(...arguments);
-    this.getWindow().addEventListener('message', this.set('eventListener', run.bind(this, 'onMessage')));
+    let listener = run.bind(this, 'onMessage');
+    this.getWindow().addEventListener('message', set(this, 'eventListener', listener));
   },
 
   getWindow() {
