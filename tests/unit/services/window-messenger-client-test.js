@@ -8,7 +8,7 @@ moduleFor('service:window-messenger-client', 'Unit | Service | Client', {
 
 // Replace this with your real tests.
 test('It works', function(assert) {
-  assert.expect(14);
+  assert.expect(18);
 
   let name = 'Foo';
   let age = 5;
@@ -78,6 +78,16 @@ test('It works', function(assert) {
   });
 
   client.fetch('parent:json-object').then(function(obj) {
+    assert.equal(obj.key, 'json', 'It should be an object with key field');
+  });
+
+  let sameQueryInstance = { my: 'query' };
+
+  client.fetch('parent:json-object', sameQueryInstance).then(function(obj) {
+    assert.equal(obj.key, 'json', 'It should be an object with key field');
+  });
+
+  client.fetch('parent:json-object', sameQueryInstance).then(function(obj) {
     assert.equal(obj.key, 'json', 'It should be an object with key field');
   });
 

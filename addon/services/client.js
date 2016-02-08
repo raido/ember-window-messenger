@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import BaseServiceMixin from '../mixins/base-service';
 
-const { run, aliasMethod, guidFor } = Ember;
+const { run, aliasMethod, guidFor, merge } = Ember;
 
 export default Ember.Service.extend(BaseServiceMixin, {
   callbacks: {},
@@ -69,7 +69,7 @@ export default Ember.Service.extend(BaseServiceMixin, {
   fetch(path, queryParams) {
     let uri = this._parseURI(path);
     let targetName = uri.target;
-    let queryObject = queryParams ? queryParams : {};
+    let queryObject = queryParams ? merge({}, queryParams) : {};
 
     let targetOrigin = this._targetOriginFor(targetName);
     Ember.assert(`Target origin for target: ${targetName} does not exist`, targetOrigin);
