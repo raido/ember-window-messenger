@@ -109,7 +109,7 @@ export default Ember.Service.extend(BaseServiceMixin, {
     let message = this._getMessageForType('ember-window-messenger-server', event);
 
     if (message !== null) {
-      const { response, id, error } = message;
+      let { response, id, error } = message;
       let inQueue = this.callbacks[id];
       // remove it from the queue right away, because otherwise RSVP catch handler
       // will interfare the code path here and doing delete in the end of
