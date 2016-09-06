@@ -27,14 +27,10 @@ export default Service.extend(Evented, {
 
   _isOriginAllowed(origin) {
     let map = this.get('targetOriginMap');
-    let targets = Object.keys(map);
-    let origins = Ember.A();
-    targets.forEach((target) => {
-      if (map.hasOwnProperty(target)) {
-        origins.push(map[target]);
-      }
-    });
-    return origins.indexOf(origin) !== -1;
+    // TODO: optimize, not to remap values with every incoming message
+    return Object.keys(this.get('targetOriginMap')).map((key) => {
+      return map[key];
+    }).indexOf(origin) !== -1;
   },
 
   _parseMessage(data) {

@@ -61,3 +61,19 @@ test('it works', function(assert) {
     subject.destroy();
   });
 });
+
+test('it should allow origin in target origin map', function(assert) {
+  assert.strictEqual(this.subject({
+    targetOriginMap: {
+      parent: '*'
+    }
+  })._isOriginAllowed('*'), true);
+});
+
+test('it should disallow origin not in target origin map', function(assert) {
+  assert.strictEqual(this.subject({
+    targetOriginMap: {
+      parent: '*'
+    }
+  })._isOriginAllowed('all'), false);
+});
