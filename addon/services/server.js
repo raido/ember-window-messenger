@@ -1,7 +1,14 @@
 import Ember from 'ember';
-import BaseServiceMixin from '../mixins/base-service';
 
-export default Ember.Service.extend(Ember.Evented, BaseServiceMixin, {
+const { inject: { service } } = Ember;
+
+export default Ember.Service.extend(Ember.Evented, {
+  windowMessengerEvents: service(),
+
+  init() {
+    this._super(...arguments);
+    this.get('windowMessengerEvents').on('from:ember-window-messenger-client', this, this.onMessage);
+  },
 
   respond(uuid, payload, event, hasError) {
     let query = {
@@ -13,14 +20,16 @@ export default Ember.Service.extend(Ember.Evented, BaseServiceMixin, {
     event.source.postMessage(JSON.stringify(query), event.origin);
   },
 
-  onMessage(event) {
-    let message = this._getMessageForType('ember-window-messenger-client', event);
-    if (message !== null) {
-      this.trigger(message.name, (response) => {
-        this.respond(message.id, response, event, false);
-      }, (response) => {
-        this.respond(message.id, response, event, true);
-      }, message.query);
-    }
+  onMessage(message) {
+    this.trigger(message.name, (response) => {
+      this.respond(message.id, response, event, false);
+    }, (response) => {
+      this.respond(message.id, response, event, true);
+    }, message.query);
+  },
+
+  willDestroy() {
+    this._super(...arguments);
+    this.get('windowMessengerEvents').off('from:ember-window-messenger-client', this, this.onMessage);
   }
 });

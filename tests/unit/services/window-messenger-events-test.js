@@ -1,14 +1,15 @@
+import { moduleFor, test } from 'ember-qunit';
 import Ember from 'ember';
-import BaseServiceMixin from 'ember-window-messenger/mixins/base-service';
-import { module, test } from 'qunit';
 
 const { run } = Ember;
 
-module('Unit | Mixin | base service');
+moduleFor('service:window-messenger-events', 'Unit | Service | window messenger events', {
+  // Specify the other units that are required for this test.
+  // needs: ['service:foo']
+});
 
 // Replace this with your real tests.
 test('it works', function(assert) {
-  let BaseServiceObject = Ember.Object.extend(BaseServiceMixin);
   let win = {
     addEventListener(event) {
       assert.equal('message', event, 'It should register message event listener');
@@ -18,7 +19,7 @@ test('it works', function(assert) {
     }
   };
 
-  let subject = BaseServiceObject.create({
+  let subject = this.subject({
     window: win,
     targetOriginMap: {
       'target-1': 'http://localhost:4200'

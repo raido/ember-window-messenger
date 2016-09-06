@@ -1,8 +1,8 @@
 import Ember from 'ember';
 
-const { run, set } = Ember;
+const { run, set, Evented, Service } = Ember;
 
-export default Ember.Mixin.create({
+export default Service.extend(Evented, {
   window,
   targetOriginMap: null,
   eventListener: null,
@@ -47,13 +47,11 @@ export default Ember.Mixin.create({
     return message;
   },
 
-  _getMessageForType(type, event) {
+  onMessage(event) {
     if (this._isOriginAllowed(event.origin)) {
       let message = this._parseMessage(event.data);
       if (message !== null) {
-        if (message.type === type) {
-          return message;
-        }
+        this.trigger(`from:${message.type}`, message);
       }
     }
     return null;

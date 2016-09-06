@@ -3,7 +3,7 @@ import Ember from 'ember';
 
 moduleFor('service:window-messenger-client', 'Unit | Service | Client', {
   // Specify the other units that are required for this test.
-  // needs: ['service:server']
+  needs: ['service:window-messenger-events']
 });
 
 // Replace this with your real tests.

@@ -1,11 +1,17 @@
 import Ember from 'ember';
-import BaseServiceMixin from '../mixins/base-service';
 
-const { run, aliasMethod, guidFor, merge } = Ember;
+const { run, aliasMethod, guidFor, merge, inject: { service } } = Ember;
 
-export default Ember.Service.extend(BaseServiceMixin, {
+export default Ember.Service.extend({
+  windowMessengerEvents: service(),
+
   callbacks: {},
   targets: {},
+
+  init() {
+    this._super(...arguments);
+    this.get('windowMessengerEvents').on('from:ember-window-messenger-server', this, this.onMessage);
+  },
 
   /**
    * Add new contentWindow target
@@ -28,6 +34,10 @@ export default Ember.Service.extend(BaseServiceMixin, {
 
   removeTarget(name) {
     delete this.targets[name];
+  },
+
+  getWindow() {
+    return window;
   },
 
   _parseURI(uri) {
@@ -105,24 +115,25 @@ export default Ember.Service.extend(BaseServiceMixin, {
    */
   rpc: aliasMethod('fetch'),
 
-  onMessage(event) {
-    let message = this._getMessageForType('ember-window-messenger-server', event);
+  onMessage(message) {
+    let { response, id, error } = message;
+    let inQueue = this.callbacks[id];
+    // remove it from the queue right away, because otherwise RSVP catch handler
+    // will interfare the code path here and doing delete in the end of
+    // if condition below would simply not run when "error" === true
+    delete this.callbacks[id];
 
-    if (message !== null) {
-      let { response, id, error } = message;
-      let inQueue = this.callbacks[id];
-      // remove it from the queue right away, because otherwise RSVP catch handler
-      // will interfare the code path here and doing delete in the end of
-      // if condition below would simply not run when "error" === true
-      delete this.callbacks[id];
-
-      if (Ember.typeOf(inQueue) === 'object') {
-        if (error) {
-          inQueue.error(response);
-        } else {
-          inQueue.success(response);
-        }
+    if (Ember.typeOf(inQueue) === 'object') {
+      if (error) {
+        inQueue.error(response);
+      } else {
+        inQueue.success(response);
       }
     }
+  },
+
+  willDestroy() {
+    this._super(...arguments);
+    this.get('windowMessengerEvents').off('from:ember-window-messenger-server', this, this.onMessage);
   }
 });
