@@ -1,10 +1,16 @@
 import Ember from 'ember';
 
-const { run, set, Evented, Service } = Ember;
+const { run, set, Evented, Service, computed } = Ember;
 
 export default Service.extend(Evented, {
   window,
   targetOriginMap: null,
+  allowedOrigins: computed('targetOriginMap', function() {
+    let map = this.get('targetOriginMap');
+    return Ember.A(Object.keys(map).map((key) => {
+      return map[key];
+    }));
+  }),
   eventListener: null,
 
   init() {
@@ -26,11 +32,7 @@ export default Service.extend(Evented, {
    */
 
   _isOriginAllowed(origin) {
-    let map = this.get('targetOriginMap');
-    // TODO: optimize, not to remap values with every incoming message
-    return Object.keys(this.get('targetOriginMap')).map((key) => {
-      return map[key];
-    }).indexOf(origin) !== -1;
+    return this.get('allowedOrigins').contains(origin);
   },
 
   _parseMessage(data) {
