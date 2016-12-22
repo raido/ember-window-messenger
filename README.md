@@ -154,6 +154,27 @@ export default Ember.Route.extend({
 });
 ```
 
+```
+#### Open popup if it isn't already open, or has been closed by the user
+
+```javascript
+// app/routes/my-route.js
+import Ember from 'ember';
+
+export default Ember.Route.extend({
+  client: Ember.inject.service('window-messenger-client'),
+
+  actions: {
+    openPopup() {
+      if (!this.get('client').hasTarget('popup')) {
+        let win = window.open('/some/path', 'Example popup', 'toolbar=no,resizable=no,width=400,height=400');
+        this.get('client').addTarget('popup', win);
+      }
+    },
+  }
+});
+```
+
 ## Installation
 
 * `git clone` this repository

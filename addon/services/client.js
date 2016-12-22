@@ -30,6 +30,22 @@ export default Ember.Service.extend(BaseServiceMixin, {
     delete this.targets[name];
   },
 
+  /**
+   * Tests whether a target is currently registered and open.
+   *
+   * @param  {String} name
+   * @public
+   *
+   * returns: boolean
+   */
+
+  hasTarget(name) {
+    if (!(name in this.targets)) {
+      return false;
+    }
+    return (this.targets[name].opener && !this.targets[name].opener.closed);
+  },
+
   _parseURI(uri) {
     let split = uri.split(':');
     let resource = split[1] || split[0];
