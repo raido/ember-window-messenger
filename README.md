@@ -1,6 +1,6 @@
 # ember-window-messenger
 
-[![Build Status](https://travis-ci.org/raido/ember-window-messenger.svg)](https://travis-ci.org/raido/ember-window-messenger)
+[![Build Status](https://travis-ci.org/raido/ember-window-messenger.svg?branch=master)](https://travis-ci.org/raido/ember-window-messenger)
 [![npm version](https://badge.fury.io/js/ember-window-messenger.svg)](https://badge.fury.io/js/ember-window-messenger)
 ![npm version](https://embadge.io/v1/badge.svg?start=1.13.0)
 
