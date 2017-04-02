@@ -15,11 +15,15 @@ export default Service.extend(Evented, {
 
   init() {
     this._super(...arguments);
-    let listener = run.bind(this, 'onMessage');
-    this.getWindow().addEventListener('message', set(this, 'eventListener', listener));
+    let listener = run.bind(this, '_onMessage');
+    this._getWindow().addEventListener('message', set(this, 'eventListener', listener));
   },
 
-  getWindow() {
+  /**
+   * @private
+   * @return {Window}
+   */
+  _getWindow() {
     return this.get('window');
   },
 
@@ -45,7 +49,7 @@ export default Service.extend(Evented, {
     return message;
   },
 
-  onMessage(event) {
+  _onMessage(event) {
     if (this._isOriginAllowed(event.origin)) {
       let message = this._parseMessage(event.data);
       if (message !== null) {
@@ -56,8 +60,8 @@ export default Service.extend(Evented, {
   },
 
   willDestroy() {
-    // Remove event listener when this service is getting destroyed
-    this.getWindow().removeEventListener('message', this.get('eventListener'));
     this._super(...arguments);
+    // Remove event listener when this service is getting destroyed
+    this._getWindow().removeEventListener('message', this.get('eventListener'));
   }
 });

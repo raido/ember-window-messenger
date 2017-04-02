@@ -14,7 +14,7 @@ export default Ember.Service.extend({
       targets: {},
       callbacks: {}
     });
-    this.get('windowMessengerEvents').on('from:ember-window-messenger-server', this, this.onMessage);
+    this.get('windowMessengerEvents').on('from:ember-window-messenger-server', this, this._onMessage);
   },
 
   /**
@@ -24,7 +24,6 @@ export default Ember.Service.extend({
    * @param {contentWindow} targetWindow DOM contentWindow
    * @public
    */
-
   addTarget(name, targetWindow) {
     set(this.targets, name, targetWindow);
   },
@@ -35,15 +34,24 @@ export default Ember.Service.extend({
    * @param  {String} name
    * @public
    */
-
   removeTarget(name) {
     delete this.get('targets')[name];
   },
 
-  getWindow() {
+  /**
+   * @private
+   * @return {Window}
+   */
+  _getWindow() {
     return window;
   },
 
+  /**
+   * Parse <target>:<request> uri
+   *
+   * @param  {String} uri
+   * @return {Object}
+   */
   _parseURI(uri) {
     let split = uri.split(':');
     let resource = split[1] || split[0];
@@ -60,26 +68,46 @@ export default Ember.Service.extend({
    * @private
    * @return {Boolean}
    */
-
   _isTargetParent(target) {
-    let win = this.getWindow();
+    let win = this._getWindow();
     let isEmbedded = win.self !== win.top || win.opener;
     return isEmbedded || target === 'parent';
   },
 
+  /**
+   * @private
+   * @return {Window}
+   */
   _getWindowParent() {
-    let win = this.getWindow();
+    let win = this._getWindow();
     return win.opener || win.parent;
   },
 
+  /**
+   * @param {String} target
+   * @private
+   * @return {Object}
+   */
   _targetFor(target) {
     return this._isTargetParent(target) ? this._getWindowParent() : this.targets[target];
   },
 
+  /**
+   * @param {String} target
+   * @private
+   * @return {Object}
+   */
   _targetOriginFor(target) {
     return this.get(`targetOriginMap.${target}`);
   },
 
+  /**
+   * Fetch data from server side
+   *
+   * @param  {String} path
+   * @param  {Object} queryParams
+   * @return {Promise}
+   */
   fetch(path, queryParams) {
     let uri = this._parseURI(path);
     let targetName = uri.target;
@@ -119,7 +147,13 @@ export default Ember.Service.extend({
    */
   rpc: aliasMethod('fetch'),
 
-  onMessage(message) {
+  /**
+   * Handle message event from Messenger Events
+   *
+   * @private
+   * @param  {Object} message
+   */
+  _onMessage(message) {
     let { response, id, error } = message;
     let inQueue = this.callbacks[id];
 
@@ -135,6 +169,6 @@ export default Ember.Service.extend({
 
   willDestroy() {
     this._super(...arguments);
-    this.get('windowMessengerEvents').off('from:ember-window-messenger-server', this, this.onMessage);
+    this.get('windowMessengerEvents').off('from:ember-window-messenger-server', this, this._onMessage);
   }
 });

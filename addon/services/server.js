@@ -7,10 +7,18 @@ export default Ember.Service.extend(Ember.Evented, {
 
   init() {
     this._super(...arguments);
-    this.get('windowMessengerEvents').on('from:ember-window-messenger-client', this, this.onMessage);
+    this.get('windowMessengerEvents').on('from:ember-window-messenger-client', this, this._onMessage);
   },
 
-  respond(uuid, payload, event, hasError) {
+  /**
+   * Send response to back to client
+   *
+   * @param  {String}  uuid
+   * @param  {Object}  payload
+   * @param  {MessageEvent}  event
+   * @param  {Boolean} hasError
+   */
+  _respond(uuid, payload, event, hasError) {
     let query = {
       id: uuid,
       type: 'ember-window-messenger-server',
@@ -20,16 +28,21 @@ export default Ember.Service.extend(Ember.Evented, {
     event.source.postMessage(JSON.stringify(query), event.origin);
   },
 
-  onMessage(message) {
+  /**
+   * Handle message that we got from Messenger Events
+   *
+   * @param  {Object} message
+   */
+  _onMessage(message) {
     this.trigger(message.name, (response) => {
-      this.respond(message.id, response, event, false);
+      this._respond(message.id, response, event, false);
     }, (response) => {
-      this.respond(message.id, response, event, true);
+      this._respond(message.id, response, event, true);
     }, message.query);
   },
 
   willDestroy() {
     this._super(...arguments);
-    this.get('windowMessengerEvents').off('from:ember-window-messenger-client', this, this.onMessage);
+    this.get('windowMessengerEvents').off('from:ember-window-messenger-client', this, this._onMessage);
   }
 });
