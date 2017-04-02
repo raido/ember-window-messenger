@@ -1,73 +1,59 @@
 import { moduleFor, test } from 'ember-qunit';
+import Ember from 'ember';
 
-moduleFor('service:window-messenger-server', 'Unit | Service | server', {
+const { getOwner, run } = Ember;
+
+moduleFor('service:window-messenger-server', 'Unit | Service | window messenger server', {
   // Specify the other units that are required for this test.
-  // needs: ['service:foo']
+  needs: ['service:window-messenger-events', 'service:window-messenger-client']
 });
 
-// Replace this with your real tests.
-test('It works', function(assert) {
-  assert.expect(4);
+test('it should receive client\'s request', function(assert) {
+  let server = this.subject();
+  let client = getOwner(server).lookup('service:window-messenger-client');
 
-  let service = this.subject({
-    targetOriginMap: {
-      parent: '*'
-    },
-
-    window: {
-      addEventListener: (/*event, callback*/) => {
-
-      },
-
-      removeEventListener: () => {
-
-      }
-    }
+  server.on('client-request', (/*resolve, reject, query*/) => {
+    assert.ok(true);
   });
-  assert.ok(service);
+  client.fetch('client-request');
+});
 
-  // Resolved request
-  service.on('resolved-request', (resolve) => {
-    resolve(200);
+test('it should not receive client\'s request if not a match', function(assert) {
+  assert.expect(0);
+
+  let server = this.subject();
+  let client = getOwner(server).lookup('service:window-messenger-client');
+
+  server.on('client-request', (/*resolve, reject, query*/) => {
+    assert.ok(true);
   });
+  client.fetch('client-request-no-match');
+});
 
-  service.onMessage({
-    source: {
-      postMessage: (payload) => {
-        let json = JSON.parse(payload);
-        assert.ok(json.response, 200, 'It should match');
-      }
-    },
-    origin: '*',
-    data: '{ "type": "ember-window-messenger-client", "name": "resolved-request" }'
+test('it should receive query from client', function(assert) {
+  let server = this.subject();
+  let client = getOwner(server).lookup('service:window-messenger-client');
+
+  server.on('client-request', (resolve, reject, query) => {
+    assert.equal(query.id, 1, 'it should have got query parameters');
   });
 
-  // Rejected request
-  service.on('rejected-request', (resolve, reject) => {
-    reject(404);
+  client.fetch('client-request', {
+    id: 1
+  });
+});
+
+test('it should not receive client request if destroyed', function(assert) {
+  assert.expect(0);
+  let server = this.subject();
+  let client = getOwner(server).lookup('service:window-messenger-client');
+
+  server.on('client-request', () => {
+    assert.ok(true);
   });
 
-  service.onMessage({
-    source: {
-      postMessage: (payload) => {
-        let json = JSON.parse(payload);
-        assert.ok(json.response, 404, 'It should match');
-      }
-    },
-    origin: '*',
-    data: '{ "type": "ember-window-messenger-client", "name": "rejected-request" }'
-  });
-
-  // Query
-  service.on('query-request', (resolve, reject, query) => {
-    assert.equal(query.key, 'name', 'Query parameter should exist');
-  });
-
-  service.onMessage({
-    source: {
-      postMessage: () => {}
-    },
-    origin: '*',
-    data: '{ "type": "ember-window-messenger-client", "name": "query-request", "query": { "key": "name"} }'
+  run(() => {
+    server.destroy();
+    client.fetch('client-request');
   });
 });
