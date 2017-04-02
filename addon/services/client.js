@@ -118,10 +118,6 @@ export default Ember.Service.extend({
   onMessage(message) {
     let { response, id, error } = message;
     let inQueue = this.callbacks[id];
-    // remove it from the queue right away, because otherwise RSVP catch handler
-    // will interfare the code path here and doing delete in the end of
-    // if condition below would simply not run when "error" === true
-    delete this.callbacks[id];
 
     if (Ember.typeOf(inQueue) === 'object') {
       if (error) {
@@ -130,6 +126,7 @@ export default Ember.Service.extend({
         inQueue.success(response);
       }
     }
+    delete this.callbacks[id];
   },
 
   willDestroy() {

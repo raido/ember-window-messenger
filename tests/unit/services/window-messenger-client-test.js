@@ -38,8 +38,24 @@ test('it should receive object from the server', function(assert) {
     }
   };
 
-  server.on('client-request', (resolve, reject) => {
+  server.on('client-request', (resolve) => {
     resolve(model);
   });
   client.fetch('client-request').then((response) => assert.deepEqual(response, model));
+});
+
+test('it should complex rejection object from the server', function(assert) {
+  let client = this.subject();
+  let server = getOwner(client).lookup('service:window-messenger-server');
+
+  let error = {
+    complex: {
+      id: 1
+    }
+  };
+
+  server.on('client-request', (resolve, reject) => {
+    reject(error);
+  });
+  client.fetch('client-request').catch((response) => assert.deepEqual(response, error));
 });
