@@ -26,7 +26,6 @@ matrix:
 
 before_install:
   - npm config set spin false
-  - npm install -g codeclimate-test-reporter
   - npm install -g bower phantomjs-prebuilt
   - bower --version
   - phantomjs --version
@@ -39,10 +38,3 @@ script:
   # Usually, it's ok to finish the test scenario without reverting
   #  to the addon's original dependency state, skipping "cleanup".
   - node_modules/.bin/ember try:one $EMBER_TRY_SCENARIO test --skip-cleanup
-
-after_script:
-  - codeclimate-test-reporter < lcov.info
-
-addons:
-  code_climate:
-      repo_token: f32f8dc0c73d81ef3fbae9d6fa076a305393f6465b59906b791abdedf4a38d54

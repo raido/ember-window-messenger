@@ -1,8 +1,6 @@
 # ember-window-messenger
 
 [![Build Status](https://travis-ci.org/raido/ember-window-messenger.svg)](https://travis-ci.org/raido/ember-window-messenger)
-[![Code Climate](https://codeclimate.com/github/raido/ember-window-messenger/badges/gpa.svg)](https://codeclimate.com/github/raido/ember-window-messenger)
-[![Test Coverage](https://codeclimate.com/github/raido/ember-window-messenger/badges/coverage.svg)](https://codeclimate.com/github/raido/ember-window-messenger/coverage)
 [![npm version](https://badge.fury.io/js/ember-window-messenger.svg)](https://badge.fury.io/js/ember-window-messenger)
 ![npm version](https://embadge.io/v1/badge.svg?start=1.13.0)
 
