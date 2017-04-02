@@ -1,15 +1,19 @@
 import Ember from 'ember';
 
-const { run, aliasMethod, guidFor, merge, inject: { service } } = Ember;
+const { run, aliasMethod, guidFor, assign, inject: { service }, set } = Ember;
 
 export default Ember.Service.extend({
   windowMessengerEvents: service(),
 
-  callbacks: {},
-  targets: {},
+  callbacks: null,
+  targets: null,
 
   init() {
     this._super(...arguments);
+    this.setProperties({
+      targets: {},
+      callbacks: {}
+    });
     this.get('windowMessengerEvents').on('from:ember-window-messenger-server', this, this.onMessage);
   },
 
@@ -22,7 +26,7 @@ export default Ember.Service.extend({
    */
 
   addTarget(name, targetWindow) {
-    this.targets[name] = targetWindow;
+    set(this.targets, name, targetWindow);
   },
 
   /**
@@ -33,7 +37,7 @@ export default Ember.Service.extend({
    */
 
   removeTarget(name) {
-    delete this.targets[name];
+    delete this.get('targets')[name];
   },
 
   getWindow() {
@@ -79,7 +83,7 @@ export default Ember.Service.extend({
   fetch(path, queryParams) {
     let uri = this._parseURI(path);
     let targetName = uri.target;
-    let queryObject = queryParams ? merge({}, queryParams) : {};
+    let queryObject = queryParams ? assign({}, queryParams) : {};
 
     let targetOrigin = this._targetOriginFor(targetName);
     Ember.assert(`Target origin for target: ${targetName} does not exist`, targetOrigin);

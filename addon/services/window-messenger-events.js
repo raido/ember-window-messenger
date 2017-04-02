@@ -32,7 +32,7 @@ export default Service.extend(Evented, {
    */
 
   _isOriginAllowed(origin) {
-    return this.get('allowedOrigins').contains(origin);
+    return this.get('allowedOrigins').includes(origin);
   },
 
   _parseMessage(data) {

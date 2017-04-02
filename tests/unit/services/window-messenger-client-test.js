@@ -97,9 +97,9 @@ test('it should not receive server response if destroyed', function(assert) {
   server.on('client-request', (resolve) => {
     resolve('Hello');
   });
+  client.fetch('client-request').then(() => assert.ok(true));
 
   run(() => {
-    client.fetch('client-request').then(() => assert.ok(true));
     client.destroy();
   })
 });
