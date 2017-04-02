@@ -27,6 +27,16 @@ test('it should throw error if target window is not registered', function(assert
   }, /Target window is not registered for: target-1/);
 });
 
+test('it should add and remove target', function(assert) {
+  let client = this.subject();
+  client.addTarget('target-1', window);
+  client.removeTarget('target-1');
+
+  assert.throws(() => {
+    client.fetch('target-1:client-request');
+  }, /Target window is not registered for: target-1/);
+});
+
 test('it should receive response from the server', function(assert) {
   let client = this.subject();
   let server = getOwner(client).lookup('service:window-messenger-server');
