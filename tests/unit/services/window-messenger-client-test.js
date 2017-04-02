@@ -8,6 +8,25 @@ moduleFor('service:window-messenger-client', 'Unit | Service | window messenger 
   needs: ['service:window-messenger-events', 'service:window-messenger-server']
 });
 
+test('it should receive response from the server for targeted request', function(assert) {
+  let client = this.subject();
+  client.addTarget('target-1', window);
+  let server = getOwner(client).lookup('service:window-messenger-server');
+
+  server.on('client-request', (resolve) => {
+    resolve('Hello');
+  });
+  client.fetch('target-1:client-request').then((response) => assert.equal(response, 'Hello'));
+});
+
+test('it should throw error if target window is not registered', function(assert) {
+  let client = this.subject();
+
+  assert.throws(() => {
+    client.fetch('target-1:client-request');
+  }, /Target window is not registered for: target-1/);
+});
+
 test('it should receive response from the server', function(assert) {
   let client = this.subject();
   let server = getOwner(client).lookup('service:window-messenger-server');
