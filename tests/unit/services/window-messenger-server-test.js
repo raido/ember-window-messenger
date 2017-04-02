@@ -1,7 +1,7 @@
 import { moduleFor, test } from 'ember-qunit';
 import Ember from 'ember';
 
-const { getOwner } = Ember;
+const { getOwner, run } = Ember;
 
 moduleFor('service:window-messenger-server', 'Unit | Service | window messenger server', {
   // Specify the other units that are required for this test.
@@ -40,5 +40,20 @@ test('it should receive query from client', function(assert) {
 
   client.fetch('client-request', {
     id: 1
+  });
+});
+
+test('it should not receive client request if destroyed', function(assert) {
+  assert.expect(0);
+  let server = this.subject();
+  let client = getOwner(server).lookup('service:window-messenger-client');
+
+  server.on('client-request', () => {
+    assert.ok(true);
+  });
+
+  run(() => {
+    server.destroy();
+    client.fetch('client-request');
   });
 });
