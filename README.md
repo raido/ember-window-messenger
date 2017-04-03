@@ -152,7 +152,6 @@ export default Ember.Route.extend({
 });
 ```
 
-```
 #### Open popup if it isn't already open, or has been closed by the user
 
 ```javascript
