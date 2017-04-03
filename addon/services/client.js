@@ -44,7 +44,7 @@ export default Ember.Service.extend({
    * @param  {String} name
    * @public
    *
-   * returns: boolean
+   * @return {Boolean}
    */
   hasTarget(name) {
     if (!(name in this.targets)) {
