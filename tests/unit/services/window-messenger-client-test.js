@@ -1,114 +1,115 @@
 import { moduleFor, test } from 'ember-qunit';
 import Ember from 'ember';
 
-moduleFor('service:window-messenger-client', 'Unit | Service | Client', {
+const { getOwner, run } = Ember;
+
+moduleFor('service:window-messenger-client', 'Unit | Service | window messenger client', {
   // Specify the other units that are required for this test.
-  // needs: ['service:server']
+  needs: ['service:window-messenger-events', 'service:window-messenger-server']
 });
 
-// Replace this with your real tests.
-test('It works', function(assert) {
-  assert.expect(18);
+test('it should receive response from the server for targeted request', function(assert) {
+  let client = this.subject();
+  client.addTarget('target-1', window);
+  let server = getOwner(client).lookup('service:window-messenger-server');
 
-  let name = 'Foo';
-  let age = 5;
-  let notFound = 404;
-  let rpc = 200;
-
-  let windowEvents = {};
-  let generatedUuids = Ember.A([]);
-
-  let client = this.subject({
-    targetOriginMap: {
-      parent: '*'
-    },
-    answers: {
-      'my-name-is': name,
-      'my-age-is': age,
-      'not-found': notFound,
-      'rpc-run': rpc,
-      'json-object': {
-        key: 'json'
-      }
-    },
-    window: {
-      parent: {
-        postMessage: (payload, targetOrigin) => {
-          function respond(uuid, responsePayload, hasError) {
-            let query = {
-              id: uuid,
-              type: 'ember-window-messenger-server',
-              response: responsePayload,
-              error: hasError
-            };
-
-            // Test that each fetch runs with unique ID
-            assert.equal(generatedUuids.contains(uuid), false, 'it should not have duplicate uuids');
-            generatedUuids.push(uuid);
-
-            windowEvents.message({
-              data: JSON.stringify(query),
-              origin: targetOrigin,
-              source: null
-            });
-          }
-
-          let question = JSON.parse(payload);
-          let error = false;
-          if (question.name === 'not-found') {
-            error = true;
-          }
-          respond(question.id, client.answers[question.name], error);
-        }
-      },
-
-      addEventListener: (event, callback) => {
-        windowEvents[event] = callback;
-      },
-
-      removeEventListener: (event) => {
-        delete windowEvents[event];
-      }
-    }
+  server.on('client-request', (resolve) => {
+    resolve('Hello');
   });
-  assert.ok(client);
+  client.fetch('target-1:client-request').then((response) => assert.equal(response, 'Hello'));
+});
 
-  client.fetch('parent:my-name-is').then(function(returnedName) {
-    assert.equal(returnedName, name, 'Name should be Foo');
-  });
+test('it should throw error if target window is not registered', function(assert) {
+  let client = this.subject();
 
-  client.fetch('parent:json-object').then(function(obj) {
-    assert.equal(obj.key, 'json', 'It should be an object with key field');
-  });
+  assert.throws(() => {
+    client.fetch('target-1:client-request');
+  }, /Target window is not registered for: target-1/);
+});
 
-  let sameQueryInstance = { my: 'query' };
-
-  client.fetch('parent:json-object', sameQueryInstance).then(function(obj) {
-    assert.equal(obj.key, 'json', 'It should be an object with key field');
-  });
-
-  client.fetch('parent:json-object', sameQueryInstance).then(function(obj) {
-    assert.equal(obj.key, 'json', 'It should be an object with key field');
-  });
-
-  client.fetch('parent:my-age-is').then(function(returnedAge) {
-    assert.equal(returnedAge, age, 'Age should be 5');
-  });
-
-  client.fetch('parent:not-found').then(null, function(returnedError) {
-    assert.equal(returnedError, notFound, 'It should match the response: 404');
-  });
-
-  client.rpc('parent:rpc-run').then(function(statusCode) {
-    assert.equal(statusCode, rpc, 'RPC status code should match');
-  });
-
-  client.addTarget('target-1', {});
-  assert.ok(client.get('targets.target-1'), 'There should be an empty target');
-
+test('it should add and remove target', function(assert) {
+  let client = this.subject();
+  client.addTarget('target-1', window);
   client.removeTarget('target-1');
-  assert.equal(null, client.get('targets.target-1'), 'There should not be a target');
 
-  // Make sure that there are no callback left in the queue which would be a memory leak
-  assert.deepEqual(client.get('callbacks'), {}, 'there should be no callbacks left');
+  assert.throws(() => {
+    client.fetch('target-1:client-request');
+  }, /Target window is not registered for: target-1/);
+});
+
+test('it should receive response from the server', function(assert) {
+  let client = this.subject();
+  let server = getOwner(client).lookup('service:window-messenger-server');
+
+  server.on('client-request', (resolve) => {
+    resolve('Hello');
+  });
+  client.fetch('client-request').then((response) => assert.equal(response, 'Hello'));
+});
+
+test('it should receive response from the server - rpc', function(assert) {
+  let client = this.subject();
+  let server = getOwner(client).lookup('service:window-messenger-server');
+
+  server.on('client-request', (resolve) => {
+    resolve('I am RPC');
+  });
+  client.rpc('client-request').then((response) => assert.equal(response, 'I am RPC'));
+});
+
+test('it should receive rejection from the server', function(assert) {
+  let client = this.subject();
+  let server = getOwner(client).lookup('service:window-messenger-server');
+
+  server.on('client-request', (resolve, reject) => {
+    reject('Failed');
+  });
+  client.fetch('client-request').catch((response) => assert.equal(response, 'Failed'));
+});
+
+test('it should receive object from the server', function(assert) {
+  let client = this.subject();
+  let server = getOwner(client).lookup('service:window-messenger-server');
+
+  let model = {
+    complex: {
+      id: 1
+    }
+  };
+
+  server.on('client-request', (resolve) => {
+    resolve(model);
+  });
+  client.fetch('client-request').then((response) => assert.deepEqual(response, model));
+});
+
+test('it should complex rejection object from the server', function(assert) {
+  let client = this.subject();
+  let server = getOwner(client).lookup('service:window-messenger-server');
+
+  let error = {
+    complex: {
+      id: 1
+    }
+  };
+
+  server.on('client-request', (resolve, reject) => {
+    reject(error);
+  });
+  client.fetch('client-request').catch((response) => assert.deepEqual(response, error));
+});
+
+test('it should not receive server response if destroyed', function(assert) {
+  assert.expect(0);
+  let client = this.subject();
+  let server = getOwner(client).lookup('service:window-messenger-server');
+
+  server.on('client-request', (resolve) => {
+    resolve('Hello');
+  });
+  client.fetch('client-request').then(() => assert.ok(true));
+
+  run(() => {
+    client.destroy();
+  })
 });

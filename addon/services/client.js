@@ -1,11 +1,21 @@
 import Ember from 'ember';
-import BaseServiceMixin from '../mixins/base-service';
 
-const { run, aliasMethod, guidFor, merge } = Ember;
+const { run, aliasMethod, guidFor, assign, inject: { service }, set } = Ember;
 
-export default Ember.Service.extend(BaseServiceMixin, {
-  callbacks: {},
-  targets: {},
+export default Ember.Service.extend({
+  windowMessengerEvents: service(),
+
+  callbacks: null,
+  targets: null,
+
+  init() {
+    this._super(...arguments);
+    this.setProperties({
+      targets: {},
+      callbacks: {}
+    });
+    this.get('windowMessengerEvents').on('from:ember-window-messenger-server', this, this._onMessage);
+  },
 
   /**
    * Add new contentWindow target
@@ -14,9 +24,8 @@ export default Ember.Service.extend(BaseServiceMixin, {
    * @param {contentWindow} targetWindow DOM contentWindow
    * @public
    */
-
   addTarget(name, targetWindow) {
-    this.targets[name] = targetWindow;
+    set(this.targets, name, targetWindow);
   },
 
   /**
@@ -25,9 +34,8 @@ export default Ember.Service.extend(BaseServiceMixin, {
    * @param  {String} name
    * @public
    */
-
   removeTarget(name) {
-    delete this.targets[name];
+    delete this.get('targets')[name];
   },
 
   /**
@@ -38,14 +46,27 @@ export default Ember.Service.extend(BaseServiceMixin, {
    *
    * returns: boolean
    */
-
   hasTarget(name) {
     if (!(name in this.targets)) {
       return false;
     }
     return (this.targets[name].opener && !this.targets[name].opener.closed);
   },
+  
+  /*
+   * @private
+   * @return {Window}
+   */
+  _getWindow() {
+    return window;
+  },
 
+  /**
+   * Parse <target>:<request> uri
+   *
+   * @param  {String} uri
+   * @return {Object}
+   */
   _parseURI(uri) {
     let split = uri.split(':');
     let resource = split[1] || split[0];
@@ -62,30 +83,50 @@ export default Ember.Service.extend(BaseServiceMixin, {
    * @private
    * @return {Boolean}
    */
-
   _isTargetParent(target) {
-    let win = this.getWindow();
+    let win = this._getWindow();
     let isEmbedded = win.self !== win.top || win.opener;
     return isEmbedded || target === 'parent';
   },
 
+  /**
+   * @private
+   * @return {Window}
+   */
   _getWindowParent() {
-    let win = this.getWindow();
+    let win = this._getWindow();
     return win.opener || win.parent;
   },
 
+  /**
+   * @param {String} target
+   * @private
+   * @return {Object}
+   */
   _targetFor(target) {
     return this._isTargetParent(target) ? this._getWindowParent() : this.targets[target];
   },
 
+  /**
+   * @param {String} target
+   * @private
+   * @return {Object}
+   */
   _targetOriginFor(target) {
     return this.get(`targetOriginMap.${target}`);
   },
 
+  /**
+   * Fetch data from server side
+   *
+   * @param  {String} path
+   * @param  {Object} queryParams
+   * @return {Promise}
+   */
   fetch(path, queryParams) {
     let uri = this._parseURI(path);
     let targetName = uri.target;
-    let queryObject = queryParams ? merge({}, queryParams) : {};
+    let queryObject = queryParams ? assign({}, queryParams) : {};
 
     let targetOrigin = this._targetOriginFor(targetName);
     Ember.assert(`Target origin for target: ${targetName} does not exist`, targetOrigin);
@@ -121,24 +162,28 @@ export default Ember.Service.extend(BaseServiceMixin, {
    */
   rpc: aliasMethod('fetch'),
 
-  onMessage(event) {
-    let message = this._getMessageForType('ember-window-messenger-server', event);
+  /**
+   * Handle message event from Messenger Events
+   *
+   * @private
+   * @param  {Object} message
+   */
+  _onMessage(message) {
+    let { response, id, error } = message;
+    let inQueue = this.callbacks[id];
 
-    if (message !== null) {
-      const { response, id, error } = message;
-      let inQueue = this.callbacks[id];
-      // remove it from the queue right away, because otherwise RSVP catch handler
-      // will interfare the code path here and doing delete in the end of
-      // if condition below would simply not run when "error" === true
-      delete this.callbacks[id];
-
-      if (Ember.typeOf(inQueue) === 'object') {
-        if (error) {
-          inQueue.error(response);
-        } else {
-          inQueue.success(response);
-        }
+    if (Ember.typeOf(inQueue) === 'object') {
+      if (error) {
+        inQueue.error(response);
+      } else {
+        inQueue.success(response);
       }
     }
+    delete this.callbacks[id];
+  },
+
+  willDestroy() {
+    this._super(...arguments);
+    this.get('windowMessengerEvents').off('from:ember-window-messenger-server', this, this._onMessage);
   }
 });
