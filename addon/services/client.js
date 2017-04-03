@@ -39,6 +39,21 @@ export default Ember.Service.extend({
   },
 
   /**
+   * Tests whether a target is currently registered and open.
+   *
+   * @param  {String} name
+   * @public
+   *
+   * @return {Boolean}
+   */
+  hasTarget(name) {
+    if (!(name in this.targets)) {
+      return false;
+    }
+    return (this.targets[name].opener && !this.targets[name].opener.closed);
+  },
+  
+  /*
    * @private
    * @return {Window}
    */
