@@ -176,8 +176,7 @@ export default Ember.Route.extend({
 
 * `git clone <repository-url>` this repository
 * `cd ember-window-messenger`
-* `npm install`
-* `bower install`
+* `yarn install` or `npm install`
 
 ## Running
 
