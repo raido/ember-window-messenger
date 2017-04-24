@@ -1,6 +1,6 @@
 {
   "name": "ember-window-messenger",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "description": "Simple window postMessage Ember addon",
   "keywords": [
     "ember-addon",
