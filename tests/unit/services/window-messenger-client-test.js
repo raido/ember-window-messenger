@@ -1,5 +1,6 @@
 import { moduleFor, test } from 'ember-qunit';
 import Ember from 'ember';
+import wait from 'ember-test-helpers/wait';
 
 const { getOwner, run } = Ember;
 
@@ -17,6 +18,7 @@ test('it should receive response from the server for targeted request', function
     resolve('Hello');
   });
   client.fetch('target-1:client-request').then((response) => assert.equal(response, 'Hello'));
+  return wait();
 });
 
 test('it should throw error if target window is not registered', function(assert) {
@@ -45,6 +47,7 @@ test('it should receive response from the server', function(assert) {
     resolve('Hello');
   });
   client.fetch('client-request').then((response) => assert.equal(response, 'Hello'));
+  return wait();
 });
 
 test('it should receive response from the server - rpc', function(assert) {
@@ -55,6 +58,7 @@ test('it should receive response from the server - rpc', function(assert) {
     resolve('I am RPC');
   });
   client.rpc('client-request').then((response) => assert.equal(response, 'I am RPC'));
+  return wait();
 });
 
 test('it should receive rejection from the server', function(assert) {
@@ -65,6 +69,7 @@ test('it should receive rejection from the server', function(assert) {
     reject('Failed');
   });
   client.fetch('client-request').catch((response) => assert.equal(response, 'Failed'));
+  return wait();
 });
 
 test('it should receive object from the server', function(assert) {
@@ -81,6 +86,7 @@ test('it should receive object from the server', function(assert) {
     resolve(model);
   });
   client.fetch('client-request').then((response) => assert.deepEqual(response, model));
+  return wait();
 });
 
 test('it should complex rejection object from the server', function(assert) {
@@ -97,6 +103,7 @@ test('it should complex rejection object from the server', function(assert) {
     reject(error);
   });
   client.fetch('client-request').catch((response) => assert.deepEqual(response, error));
+  return wait();
 });
 
 test('it should not receive server response if destroyed', function(assert) {
@@ -112,4 +119,5 @@ test('it should not receive server response if destroyed', function(assert) {
   run(() => {
     client.destroy();
   })
+  return wait();
 });

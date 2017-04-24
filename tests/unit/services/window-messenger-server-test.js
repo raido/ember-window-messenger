@@ -1,5 +1,6 @@
 import { moduleFor, test } from 'ember-qunit';
 import Ember from 'ember';
+import wait from 'ember-test-helpers/wait';
 
 const { getOwner, run } = Ember;
 
@@ -16,6 +17,7 @@ test('it should receive client\'s request', function(assert) {
     assert.ok(true);
   });
   client.fetch('client-request');
+  return wait();
 });
 
 test('it should not receive client\'s request if not a match', function(assert) {
@@ -28,6 +30,7 @@ test('it should not receive client\'s request if not a match', function(assert) 
     assert.ok(true);
   });
   client.fetch('client-request-no-match');
+  return wait();
 });
 
 test('it should receive query from client', function(assert) {
@@ -41,6 +44,7 @@ test('it should receive query from client', function(assert) {
   client.fetch('client-request', {
     id: 1
   });
+  return wait();
 });
 
 test('it should not receive client request if destroyed', function(assert) {
@@ -56,4 +60,5 @@ test('it should not receive client request if destroyed', function(assert) {
     server.destroy();
     client.fetch('client-request');
   });
+  return wait();
 });
