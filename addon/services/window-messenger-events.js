@@ -53,7 +53,7 @@ export default Service.extend(Evented, {
     if (this._isOriginAllowed(event.origin)) {
       let message = this._parseMessage(event.data);
       if (message !== null) {
-        this.trigger(`from:${message.type}`, message);
+        this.trigger(`from:${message.type}`, message, event);
       }
     }
     return null;
