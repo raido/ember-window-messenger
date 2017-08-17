@@ -32,8 +32,9 @@ export default Ember.Service.extend(Ember.Evented, {
    * Handle message that we got from Messenger Events
    *
    * @param  {Object} message
+   * @param  {Object} event
    */
-  _onMessage(message) {
+  _onMessage(message, event) {
     this.trigger(message.name, (response) => {
       this._respond(message.id, response, event, false);
     }, (response) => {
