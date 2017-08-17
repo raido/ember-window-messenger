@@ -1,5 +1,10 @@
 # ember-window-messenger
 
+## [1.0.1] - 2017-08-17
+### Fixed
+- PR #6 - issue with winow.opener check
+- PR #8 - using global event to post back to the client
+
 ## [1.0.0] - 2017-04-24
 ### Added
 - Service for dispatching messages, so only one post message event listener is registered
@@ -43,6 +48,7 @@
 - An initial release of this addon.
 
 [Unreleased]: https://github.com/raido/ember-window-messenger/compare/v1.0.0...develop
+[1.0.1]: https://github.com/raido/ember-window-messenger/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/raido/ember-window-messenger/compare/v0.3.0...v1.0.0
 [0.3.0]: https://github.com/raido/ember-window-messenger/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/raido/ember-window-messenger/compare/v0.2.0...v0.2.1
