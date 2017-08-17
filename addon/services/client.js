@@ -52,7 +52,7 @@ export default Ember.Service.extend({
     }
     return (this.targets[name].opener && !this.targets[name].opener.closed);
   },
-  
+
   /*
    * @private
    * @return {Window}
@@ -85,7 +85,7 @@ export default Ember.Service.extend({
    */
   _isTargetParent(target) {
     let win = this._getWindow();
-    let isEmbedded = win.self !== win.top || win.opener;
+    let isEmbedded = win.self !== (win.top || win.opener);
     return isEmbedded || target === 'parent';
   },
 
