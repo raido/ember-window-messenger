@@ -2,7 +2,7 @@
 
 ## [1.0.1] - 2017-08-17
 ### Fixed
-- PR #6 - issue with winow.opener check
+- PR #6 - issue with winow.opener check + ember-assign-polyfill
 - PR #8 - using global event to post back to the client
 
 ## [1.0.0] - 2017-04-24
