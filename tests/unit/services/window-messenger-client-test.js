@@ -1,8 +1,7 @@
+import { getOwner } from '@ember/application';
+import { run } from '@ember/runloop';
 import { moduleFor, test } from 'ember-qunit';
-import Ember from 'ember';
 import wait from 'ember-test-helpers/wait';
-
-const { getOwner, run } = Ember;
 
 moduleFor('service:window-messenger-client', 'Unit | Service | window messenger client', {
   // Specify the other units that are required for this test.

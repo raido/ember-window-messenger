@@ -1,11 +1,12 @@
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
+import Route from '@ember/routing/route';
 
-export default Ember.Route.extend({
-  client: Ember.inject.service('window-messenger-client'),
-  server: Ember.inject.service('window-messenger-server'),
+export default Route.extend({
+  client: service('window-messenger-client'),
+  server: service('window-messenger-server'),
 
   init() {
-    this._super.apply(...arguments);
+    this._super(...arguments);
 
     this.get('server').on('name', (resolve) => {
       resolve('My name is: Target 1 - client/server one');

@@ -1,7 +1,8 @@
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
+import Route from '@ember/routing/route';
 
-export default Ember.Route.extend({
-  client: Ember.inject.service('window-messenger-client'),
+export default Route.extend({
+  client: service('window-messenger-client'),
 
   model() {
     return this.get('client').fetch('demo-data');

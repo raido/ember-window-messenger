@@ -1,13 +1,15 @@
-import Ember from 'ember';
-
-const { run, set, Evented, Service, computed } = Ember;
+import { A } from '@ember/array';
+import { run } from '@ember/runloop';
+import Evented from '@ember/object/evented';
+import Service from '@ember/service';
+import { computed, set } from '@ember/object';
 
 export default Service.extend(Evented, {
   window,
   targetOriginMap: null,
   allowedOrigins: computed('targetOriginMap', function() {
     let map = this.get('targetOriginMap');
-    return Ember.A(Object.keys(map).map((key) => {
+    return A(Object.keys(map).map((key) => {
       return map[key];
     }));
   }),

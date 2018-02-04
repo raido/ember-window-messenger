@@ -1,10 +1,11 @@
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
+import Route from '@ember/routing/route';
 
-export default Ember.Route.extend({
-  server: Ember.inject.service('window-messenger-server'),
+export default Route.extend({
+  server: service('window-messenger-server'),
 
   init() {
-    this._super.apply(...arguments);
+    this._super(...arguments);
 
     this.get('server').on('popup-name', (resolve) => {
       resolve('I am a popup window :)');

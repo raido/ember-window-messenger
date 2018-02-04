@@ -1,8 +1,7 @@
-import Ember from 'ember';
+import Evented from '@ember/object/evented';
+import Service, { inject as service } from '@ember/service';
 
-const { inject: { service } } = Ember;
-
-export default Ember.Service.extend(Ember.Evented, {
+export default Service.extend(Evented, {
   windowMessengerEvents: service(),
 
   init() {
