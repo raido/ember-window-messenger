@@ -1,5 +1,10 @@
 # ember-window-messenger
 
+## [1.2.0] - 2018-02-04
+### Changed
+- Upgrade to Babel 6.6.0+
+- Upgrade to Ember-CLI 2.18 and Ember.js 2.18
+
 ## [1.1.0] - 2017-09-10
 ### Changed
 - Upgrade to Ember-CLI 2.15 and Ember.js 2.15
@@ -51,6 +56,7 @@
 ### Added
 - An initial release of this addon.
 
+[1.2.0]: https://github.com/raido/ember-window-messenger/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/raido/ember-window-messenger/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/raido/ember-window-messenger/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/raido/ember-window-messenger/compare/v0.3.0...v1.0.0
