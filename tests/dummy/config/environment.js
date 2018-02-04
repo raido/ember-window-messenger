@@ -1,4 +1,3 @@
-/* eslint-env node */
 'use strict';
 
 module.exports = function(environment) {
@@ -47,11 +46,16 @@ module.exports = function(environment) {
     ENV.APP.LOG_VIEW_LOOKUPS = false;
 
     ENV.APP.rootElement = '#ember-testing';
+    ENV.APP.autoboot = false;
 
     ENV.APP['ember-window-messenger'] = {
       'parent': 'http://localhost:7357',
       'target-1': 'http://localhost:7357'
     };
+  }
+
+  if (environment === 'production') {
+    // here you can enable a production-specific feature
   }
 
   return ENV;

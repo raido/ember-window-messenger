@@ -1,8 +1,14 @@
-import Ember from 'ember';
+import { typeOf } from '@ember/utils';
+import { Promise as EmberPromise } from 'rsvp';
+import { assert } from '@ember/debug';
+import { dasherize } from '@ember/string';
+import { run } from '@ember/runloop';
+import { guidFor } from '@ember/object/internals';
+import { assign } from '@ember/polyfills';
+import Service, { inject as service } from '@ember/service';
+import { set, aliasMethod } from '@ember/object';
 
-const { run, aliasMethod, guidFor, assign, inject: { service }, set } = Ember;
-
-export default Ember.Service.extend({
+export default Service.extend({
   windowMessengerEvents: service(),
 
   callbacks: null,
@@ -72,7 +78,7 @@ export default Ember.Service.extend({
     let resource = split[1] || split[0];
     return {
       target: split[1] ? split[0] : 'parent',
-      resource: Ember.String.dasherize(resource)
+      resource: dasherize(resource)
     };
   },
 
@@ -129,12 +135,12 @@ export default Ember.Service.extend({
     let queryObject = queryParams ? assign({}, queryParams) : {};
 
     let targetOrigin = this._targetOriginFor(targetName);
-    Ember.assert(`Target origin for target: ${targetName} does not exist`, targetOrigin);
+    assert(`Target origin for target: ${targetName} does not exist`, targetOrigin);
 
     let target = this._targetFor(targetName);
-    Ember.assert(`Target window is not registered for: ${targetName}`, target);
+    assert(`Target window is not registered for: ${targetName}`, target);
 
-    return new Ember.RSVP.Promise((resolve, reject) => {
+    return new EmberPromise((resolve, reject) => {
       let uuid = guidFor(queryObject);
       let query = {
         id: uuid,
@@ -172,7 +178,7 @@ export default Ember.Service.extend({
     let { response, id, error } = message;
     let inQueue = this.callbacks[id];
 
-    if (Ember.typeOf(inQueue) === 'object') {
+    if (typeOf(inQueue) === 'object') {
       if (error) {
         inQueue.error(response);
       } else {

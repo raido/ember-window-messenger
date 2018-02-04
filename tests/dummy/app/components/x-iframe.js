@@ -1,12 +1,13 @@
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
+import Component from '@ember/component';
 import componentLayout from '../templates/components/x-iframe';
 
-export default Ember.Component.extend({
+export default Component.extend({
   tagName: 'iframe',
   attributeBindings: ['src'],
   layout: componentLayout,
 
-  client: Ember.inject.service('window-messenger-client'),
+  client: service('window-messenger-client'),
 
   didInsertElement() {
     this.get('client').addTarget(this.get('target'), this.$().get(0).contentWindow);
