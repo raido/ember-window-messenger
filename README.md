@@ -4,7 +4,7 @@
 [![npm version](https://badge.fury.io/js/ember-window-messenger.svg)](https://badge.fury.io/js/ember-window-messenger)
 ![npm version](https://embadge.io/v1/badge.svg?start=1.13.0)
 
-This Ember addon is a lightweight postMessage client/server implementation. It is built on promises so the `fetch` and `rpc` methods can used directly in your route `model()` hooks.
+This Ember addon is a lightweight postMessage client/server implementation. It is built on promises so the `fetch` and `rpc` methods can be used directly in your route `model()` hooks.
 
 For changelog see [CHANGELOG.md](https://github.com/raido/ember-window-messenger/blob/master/CHANGELOG.md)
 
