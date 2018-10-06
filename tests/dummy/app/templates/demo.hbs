@@ -1,14 +1,14 @@
 <div>
-  {{x-iframe
-    src="/client-server-one"
-    style="width: 500px; height: 500px;"
-    target="target-1"
-  }}
-  {{x-iframe
-    src="/client-server-two"
-    style="width: 500px; height: 500px;"
-    target="target-2"
-  }}
+  <XIframe
+    @src="/client-server-one"
+    @style="width: 500px; height: 500px;"
+    @target="target-1"
+  />
+  <XIframe
+    @src="/client-server-two"
+    @style="width: 500px; height: 500px;"
+    @target="target-2"
+  />
 </div>
 
 <h4>Got server query: {{model}}</h4>
