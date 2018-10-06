@@ -5,7 +5,7 @@ import { setupTest } from 'ember-qunit';
 module('Unit | Service | window messenger events', function(hooks) {
   setupTest(hooks);
 
-  test('it should register and deregister message event listener', function(assert) {
+  test('it should register and deregister message event listener', async function(assert) {
     assert.expect(1);
 
     let service = this.owner.lookup('service:window-messenger-events');
@@ -30,7 +30,7 @@ module('Unit | Service | window messenger events', function(hooks) {
     window.postMessage(message, '*');
   });
 
-  test('it should handle message, if not allowed origin', function(assert) {
+  test('it should handle message, if not allowed origin', async function(assert) {
     assert.expect(0);
 
     let service = this.owner.lookup('service:window-messenger-events');

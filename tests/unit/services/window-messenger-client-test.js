@@ -6,7 +6,7 @@ import { settled } from '@ember/test-helpers';
 module('Unit | Service | window messenger client', function(hooks) {
   setupTest(hooks);
 
-  test('it should receive response from the server for targeted request', function(assert) {
+  test('it should receive response from the server for targeted request', async function(assert) {
     let client = this.owner.lookup('service:window-messenger-client');
     client.addTarget('target-1', window);
     let server = this.owner.lookup('service:window-messenger-server');
@@ -14,11 +14,10 @@ module('Unit | Service | window messenger client', function(hooks) {
     server.on('client-request', (resolve) => {
       resolve('Hello');
     });
-    client.fetch('target-1:client-request').then((response) => assert.equal(response, 'Hello'));
-    return settled();
+    await client.fetch('target-1:client-request').then((response) => assert.equal(response, 'Hello'));
   });
 
-  test('it should throw error if target window is not registered', function(assert) {
+  test('it should throw error if target window is not registered', async function(assert) {
     let client = this.owner.lookup('service:window-messenger-client');
 
     assert.throws(() => {
@@ -26,7 +25,7 @@ module('Unit | Service | window messenger client', function(hooks) {
     }, /Target window is not registered for: target-1/);
   });
 
-  test('it should add and remove target', function(assert) {
+  test('it should add and remove target', async function(assert) {
     let client = this.owner.lookup('service:window-messenger-client');
     client.addTarget('target-1', window);
     client.removeTarget('target-1');
@@ -36,40 +35,37 @@ module('Unit | Service | window messenger client', function(hooks) {
     }, /Target window is not registered for: target-1/);
   });
 
-  test('it should receive response from the server', function(assert) {
+  test('it should receive response from the server', async function(assert) {
     let client = this.owner.lookup('service:window-messenger-client');
     let server = this.owner.lookup('service:window-messenger-server');
 
     server.on('client-request', (resolve) => {
       resolve('Hello');
     });
-    client.fetch('client-request').then((response) => assert.equal(response, 'Hello'));
-    return settled();
+    await client.fetch('client-request').then((response) => assert.equal(response, 'Hello'));
   });
 
-  test('it should receive response from the server - rpc', function(assert) {
+  test('it should receive response from the server - rpc', async function(assert) {
     let client = this.owner.lookup('service:window-messenger-client');
     let server = this.owner.lookup('service:window-messenger-server');
 
     server.on('client-request', (resolve) => {
       resolve('I am RPC');
     });
-    client.rpc('client-request').then((response) => assert.equal(response, 'I am RPC'));
-    return settled();
+    await client.rpc('client-request').then((response) => assert.equal(response, 'I am RPC'));
   });
 
-  test('it should receive rejection from the server', function(assert) {
+  test('it should receive rejection from the server', async function(assert) {
     let client = this.owner.lookup('service:window-messenger-client');
     let server = this.owner.lookup('service:window-messenger-server');
 
     server.on('client-request', (resolve, reject) => {
       reject('Failed');
     });
-    client.fetch('client-request').catch((response) => assert.equal(response, 'Failed'));
-    return settled();
+    await client.fetch('client-request').catch((response) => assert.equal(response, 'Failed'));
   });
 
-  test('it should receive object from the server', function(assert) {
+  test('it should receive object from the server', async function(assert) {
     let client = this.owner.lookup('service:window-messenger-client');
     let server = this.owner.lookup('service:window-messenger-server');
 
@@ -82,11 +78,10 @@ module('Unit | Service | window messenger client', function(hooks) {
     server.on('client-request', (resolve) => {
       resolve(model);
     });
-    client.fetch('client-request').then((response) => assert.deepEqual(response, model));
-    return settled();
+    await client.fetch('client-request').then((response) => assert.deepEqual(response, model));
   });
 
-  test('it should complex rejection object from the server', function(assert) {
+  test('it should complex rejection object from the server', async function(assert) {
     let client = this.owner.lookup('service:window-messenger-client');
     let server = this.owner.lookup('service:window-messenger-server');
 
@@ -99,11 +94,10 @@ module('Unit | Service | window messenger client', function(hooks) {
     server.on('client-request', (resolve, reject) => {
       reject(error);
     });
-    client.fetch('client-request').catch((response) => assert.deepEqual(response, error));
-    return settled();
+    await client.fetch('client-request').catch((response) => assert.deepEqual(response, error));
   });
 
-  test('it should not receive server response if destroyed', function(assert) {
+  test('it should not receive server response if destroyed', async function(assert) {
     assert.expect(0);
     let client = this.owner.lookup('service:window-messenger-client');
     let server = this.owner.lookup('service:window-messenger-server');
@@ -116,6 +110,6 @@ module('Unit | Service | window messenger client', function(hooks) {
     run(() => {
       client.destroy();
     })
-    return settled();
+    await settled();
   });
 });

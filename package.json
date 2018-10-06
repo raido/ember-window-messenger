@@ -1,6 +1,6 @@
 {
   "name": "ember-window-messenger",
-  "version": "1.2.0",
+  "version": "1.2.2",
   "description": "Simple window postMessage Ember addon",
   "keywords": [
     "ember-addon",
@@ -26,7 +26,6 @@
     "test:all": "ember try:each"
   },
   "dependencies": {
-    "bower": "^1.8.0",
     "ember-assign-polyfill": "^2.0.1",
     "ember-cli-babel": "^6.16.0"
   },
