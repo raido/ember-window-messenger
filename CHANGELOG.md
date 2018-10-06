@@ -1,5 +1,9 @@
 # ember-window-messenger
 
+## [2.0.1] - 2018-10-06
+### Changed
+- Internal: Clean up obsolete files
+
 ## [2.0.0] - 2018-10-06
 ### Breaking
 -  Drop support for Ember v1.13
@@ -71,6 +75,7 @@
 ### Added
 - An initial release of this addon.
 
+[2.0.1]: https://github.com/raido/ember-window-messenger/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/raido/ember-window-messenger/compare/v1.2.2...v2.0.0
 [1.2.2]: https://github.com/raido/ember-window-messenger/compare/v1.2.1...v1.2.2
 [1.2.1]: https://github.com/raido/ember-window-messenger/compare/v1.2.0...v1.2.1
