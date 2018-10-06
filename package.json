@@ -26,7 +26,7 @@
     "test:all": "ember try:each"
   },
   "dependencies": {
-    "ember-assign-polyfill": "^2.0.1",
+    "ember-assign-polyfill": "~2.5.0",
     "ember-cli-babel": "^6.16.0"
   },
   "devDependencies": {
