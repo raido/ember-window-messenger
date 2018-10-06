@@ -151,10 +151,10 @@ export default Service.extend({
 
       this.callbacks[uuid] = {
         success: (json) => {
-          run(null, resolve, json);
+          run.join(null, resolve, json);
         },
         error: (json) => {
-          run(null, reject, json);
+          run.join(null, reject, json);
         }
       };
       target.postMessage(JSON.stringify(query), targetOrigin);
