@@ -57,4 +57,53 @@ module('Unit | Service | window messenger server', function(hooks) {
     });
     await settled();
   });
+
+  test('it should receive messages with newly observed message types', async function(assert) {
+    assert.expect(2);
+
+    const server = this.owner.lookup('service:window-messenger-server');
+    const client = this.owner.lookup('service:window-messenger-client');
+    const message = JSON.stringify({
+      id: +new Date(),
+      type: 'test-dummy',
+      name: 'hello-world',
+      query: {}
+    });
+
+    server.on('hello-world', () => {
+      assert.ok(true);
+    });
+
+    server.on('listen-to-type', () => {
+      server.listenToType('test-dummy');
+      assert.deepEqual(server.get('observedTypes'), ['test-dummy']);
+    });
+
+    window.postMessage(message, '*');
+    client.fetch('listen-to-type');
+    window.postMessage(message, '*');
+  });
+
+  test('it should not receive messages from ignored message types', async function(assert) {
+    assert.expect(1);
+
+    const server = this.owner.lookup('service:window-messenger-server');
+    const message = JSON.stringify({
+      id: +new Date(),
+      type: 'test-dummy',
+      name: 'hello-world',
+      query: {}
+    });
+
+    server.on('hello-world', () => {
+      assert.ok(false);
+    });
+
+    server.listenToType('test-dummy');
+    server.ignoreType('test-dummy');
+
+    assert.deepEqual(server.get('observedTypes'), []);
+
+    window.postMessage(message, '*');
+  });
 });

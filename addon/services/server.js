@@ -6,7 +6,31 @@ export default Service.extend(Evented, {
 
   init() {
     this._super(...arguments);
+    this.set('observedTypes', []);
     this.get('windowMessengerEvents').on('from:ember-window-messenger-client', this, this._onMessage);
+  },
+
+  /**
+   * Listen to messages published with a custom type
+   *
+   * @param {String} type - value to match in the message's type property
+   */
+  listenToType(type) {
+    this.get('observedTypes').push(type);
+    this.get('windowMessengerEvents').on(`from:${type}`, this, this._onMessage);
+  },
+
+  /**
+   * Ignore messages published with the specified type
+   *
+   * @param {String} type - value to ignore in future messages' type property
+   */
+  ignoreType(type) {
+    const index = this.get('observedTypes').indexOf(type);
+    if (index != -1) {
+      this.get('observedTypes').splice(index, 1);
+      this.get('windowMessengerEvents').off(`from:${type}`, this, this._onMessage);
+    }
   },
 
   /**
@@ -43,6 +67,8 @@ export default Service.extend(Evented, {
 
   willDestroy() {
     this._super(...arguments);
-    this.get('windowMessengerEvents').off('from:ember-window-messenger-client', this, this._onMessage);
+    const windowMessengerEvents = this.get('windowMessengerEvents');
+    windowMessengerEvents.off('from:ember-window-messenger-client', this, this._onMessage);
+    this.get('observedTypes').forEach(type => windowMessengerEvents.off(`from:${type}`, this, this._onMessage));
   }
 });

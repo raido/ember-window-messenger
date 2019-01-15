@@ -104,6 +104,44 @@ export default Ember.Route.extend({
 });
 ```
 
+#### Receive messages from a plain `window.postMessage` call
+
+By default, this addon only handles messages that have a `type` of `ember-window-messenger-client`. If you want to use a plain `window.postMessage` call, you can listen to a custom type:
+
+```javascript
+import Ember from 'ember';
+
+export default Ember.Route.extend({
+  server: Ember.inject.service('window-messenger-server'),
+
+  init() {
+    this._super(...arguments);
+
+    this.get('server').listenToType('custom');
+    this.get('server').on('demo-data', () => {
+      console.log('got custom event');
+    });
+  },
+
+  willDestroy() {
+    this._super(...arguments);
+
+    this.get('server').ignoreType('custom'); // Stop listening to the custom type
+  },
+
+  actions: {
+    sendMessage() {
+      window.postMessage(JSON.stringify({
+        id: +new Date(),
+        name: 'demo-data',
+        type: 'custom',
+        query: {}
+      }), '*');
+    }
+  }
+});
+```
+
 ### iFrames, popup windows
 
 If you want to communicate with an iframe or a popup window opened with `window.open`, then you have to register your window instance on the client with matching target name from `config/environment` map.
