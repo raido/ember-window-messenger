@@ -32,6 +32,23 @@ APP: {
 
 This list is also used for validation, to check if message comes from an allowed origin.
 
+You can also allow/disallow origins dynamically:
+
+```javascript
+import Ember from 'ember';
+
+export default Ember.Route.extend({
+  windowMessengerEvents: Ember.inject.service('window-messenger-events'),
+
+  init() {
+    this._super(...arguments);
+
+    this.get('windowMessengerEvents').allowOrigin('example', 'http://localhost:4200');
+    this.get('windowMessengerEvents').disallowOrigin('popup');
+   }
+});
+```
+
 ### Examples
 
 If you dare, fire up the dummy app in this addon and test it out. Below are the basic examples, see dummy app for more.
