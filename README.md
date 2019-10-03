@@ -38,11 +38,14 @@ You can also allow/disallow origins dynamically:
 import Ember from 'ember';
 
 export default Ember.Route.extend({
+  windowMessengerClient: Ember.inject.service('window-messenger-client'),
   windowMessengerEvents: Ember.inject.service('window-messenger-events'),
 
   init() {
     this._super(...arguments);
 
+    this.get('windowMessengerClient').allowOrigin('example', 'http://localhost:4200');
+    this.get('windowMessengerClient').disallowOrigin('popup');
     this.get('windowMessengerEvents').allowOrigin('example', 'http://localhost:4200');
     this.get('windowMessengerEvents').disallowOrigin('popup');
    }
