@@ -22,6 +22,27 @@ export default Service.extend(Evented, {
   },
 
   /**
+   * Allow a new origin to send messages
+   *
+   * @param {String} name - friendly name for the allowed message origin
+   * @param {String} origin - origin URL
+   */
+  allowOrigin(name, origin) {
+    this.get('targetOriginMap')[name] = origin;
+    this.notifyPropertyChange('targetOriginMap');
+  },
+
+  /**
+   * Disallow an origin from sending messages
+   *
+   * @param {String} name - friendly name for the disallowed message origin
+   */
+  disallowOrigin(name) {
+    delete this.get('targetOriginMap')[name];
+    this.notifyPropertyChange('targetOriginMap');
+  },
+
+  /**
    * @private
    * @return {Window}
    */

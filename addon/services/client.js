@@ -1,3 +1,4 @@
+import { A } from '@ember/array';
 import { typeOf } from '@ember/utils';
 import { Promise as EmberPromise } from 'rsvp';
 import { assert } from '@ember/debug';
@@ -6,11 +7,17 @@ import { run } from '@ember/runloop';
 import { guidFor } from '@ember/object/internals';
 import { assign } from '@ember/polyfills';
 import Service, { inject as service } from '@ember/service';
-import { set, aliasMethod } from '@ember/object';
+import { set, aliasMethod, computed } from '@ember/object';
 
 export default Service.extend({
   windowMessengerEvents: service(),
-
+  targetOriginMap: null,
+  allowedOrigins: computed('targetOriginMap', function() {
+    let map = this.get('targetOriginMap');
+    return A(Object.keys(map).map((key) => {
+      return map[key];
+    }));
+  }),
   callbacks: null,
   targets: null,
 
@@ -21,6 +28,27 @@ export default Service.extend({
       callbacks: {}
     });
     this.get('windowMessengerEvents').on('from:ember-window-messenger-server', this, this._onMessage);
+  },
+
+  /**
+   * Allow a new origin to receive messages sent from this service
+   *
+   * @param {String} name - friendly name for the allowed message target origin
+   * @param {String} origin - origin URL
+   */
+  allowOrigin(name, origin) {
+    this.get('targetOriginMap')[name] = origin;
+    this.notifyPropertyChange('targetOriginMap');
+  },
+
+  /**
+   * Disallow an origin from receiving messages sent from this service
+   *
+   * @param {String} name - friendly name for the disallowed message target origin
+   */
+  disallowOrigin(name) {
+    delete this.get('targetOriginMap')[name];
+    this.notifyPropertyChange('targetOriginMap');
   },
 
   /**

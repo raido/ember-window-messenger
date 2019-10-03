@@ -112,4 +112,26 @@ module('Unit | Service | window messenger client', function(hooks) {
     })
     await settled();
   });
+
+  test('it should send fetch successfully after allowing origin', async function(assert) {
+    const client = this.owner.lookup('service:window-messenger-client'),
+      server = this.owner.lookup('service:window-messenger-server');
+
+    client.set('targetOriginMap', {});
+    client.allowOrigin('test', 'http://localhost:7357');
+    client.addTarget('test', window);
+
+    server.on('client-request', (resolve) => {
+      resolve('Hello');
+    });
+    await client.fetch('test:client-request').then((response) => assert.equal(response, 'Hello'));
+  });
+
+  test('it should have no allowed origins after removing default origins', async function(assert) {
+    const client = this.owner.lookup('service:window-messenger-client');
+    client.disallowOrigin('parent');
+    client.disallowOrigin('target-1');
+
+    assert.deepEqual(client.get('allowedOrigins'), []);
+  });
 });
