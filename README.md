@@ -1,6 +1,6 @@
 # ember-window-messenger
 
-[![Build Status](https://travis-ci.org/raido/ember-window-messenger.svg?branch=master)](https://travis-ci.org/raido/ember-window-messenger)
+[![CI](https://github.com/raido/ember-window-messenger/actions/workflows/ci.yml/badge.svg)](https://github.com/raido/ember-window-messenger/actions/workflows/ci.yml)
 [![npm version](https://badge.fury.io/js/ember-window-messenger.svg)](https://badge.fury.io/js/ember-window-messenger)
 
 This Ember addon is a lightweight postMessage client/server implementation. It is built on promises so the `fetch` and `rpc` methods can be used directly in your route `model()` hooks.
