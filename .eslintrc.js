@@ -20,10 +20,8 @@ module.exports = {
     browser: true,
   },
   rules: {
-    'ember/no-classic-classes': 'off',
-    'ember/no-component-lifecycle-hooks': 'off',
-    'ember/require-tagless-components': 'off',
-    'ember/no-classic-components': 'off',
+    'ember/classic-decorator-hooks': 'off', // need to setup client/server messagebus differently
+    'ember/no-classic-classes': 'off', // need get rid of Evented mixin first
   },
   overrides: [
     // node files

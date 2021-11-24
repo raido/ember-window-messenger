@@ -7,24 +7,21 @@ import { guidFor } from '@ember/object/internals';
 import Service, { inject as service } from '@ember/service';
 import { set } from '@ember/object';
 
-export default Service.extend({
-  windowMessengerEvents: service(),
+export default class WindowMessengerClientService extends Service {
+  @service
+  windowMessengerEvents;
 
-  callbacks: null,
-  targets: null,
+  callbacks = {};
+  targets = {};
 
   init() {
-    this._super(...arguments);
-    this.setProperties({
-      targets: {},
-      callbacks: {},
-    });
+    super.init();
     this.windowMessengerEvents.on(
       'from:ember-window-messenger-server',
       this,
       this._onMessage
     );
-  },
+  }
 
   /**
    * Add new contentWindow target
@@ -35,7 +32,7 @@ export default Service.extend({
    */
   addTarget(name, targetWindow) {
     set(this.targets, name, targetWindow);
-  },
+  }
 
   /**
    * Remove contentWindow target
@@ -45,7 +42,7 @@ export default Service.extend({
    */
   removeTarget(name) {
     delete this.targets[name];
-  },
+  }
 
   /**
    * Tests whether a target is currently registered and open.
@@ -60,7 +57,7 @@ export default Service.extend({
       return false;
     }
     return this.targets[name].opener && !this.targets[name].opener.closed;
-  },
+  }
 
   /*
    * @private
@@ -68,7 +65,7 @@ export default Service.extend({
    */
   _getWindow() {
     return window;
-  },
+  }
 
   /**
    * Parse <target>:<request> uri
@@ -83,7 +80,7 @@ export default Service.extend({
       target: split[1] ? split[0] : 'parent',
       resource: dasherize(resource),
     };
-  },
+  }
 
   /**
    * Determine if resource target is parent or not
@@ -96,7 +93,7 @@ export default Service.extend({
     let win = this._getWindow();
     let isEmbedded = win.self !== (win.top || win.opener);
     return isEmbedded || target === 'parent';
-  },
+  }
 
   /**
    * @private
@@ -105,7 +102,7 @@ export default Service.extend({
   _getWindowParent() {
     let win = this._getWindow();
     return win.opener || win.parent;
-  },
+  }
 
   /**
    * @param {String} target
@@ -116,7 +113,7 @@ export default Service.extend({
     return this._isTargetParent(target)
       ? this._getWindowParent()
       : this.targets[target];
-  },
+  }
 
   /**
    * @param {String} target
@@ -125,7 +122,7 @@ export default Service.extend({
    */
   _targetOriginFor(target) {
     return this.targetOriginMap[target];
-  },
+  }
 
   /**
    * Fetch data from server side
@@ -167,7 +164,7 @@ export default Service.extend({
       };
       target.postMessage(JSON.stringify(query), targetOrigin);
     }, `ember-window-messenger: ${path}`);
-  },
+  }
 
   /**
    * Fetch data from server side
@@ -178,7 +175,7 @@ export default Service.extend({
    */
   rpc(path, queryParams) {
     return this.fetch(path, queryParams);
-  },
+  }
 
   /**
    * Handle message event from Messenger Events
@@ -198,14 +195,14 @@ export default Service.extend({
       }
     }
     delete this.callbacks[id];
-  },
+  }
 
   willDestroy() {
-    this._super(...arguments);
+    super.willDestroy();
     this.windowMessengerEvents.off(
       'from:ember-window-messenger-server',
       this,
       this._onMessage
     );
-  },
-});
+  }
+}

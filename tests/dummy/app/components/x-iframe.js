@@ -1,21 +1,18 @@
 import { inject as service } from '@ember/service';
-import Component from '@ember/component';
-import componentLayout from '../templates/components/x-iframe';
+import Component from '@glimmer/component';
+import { action } from '@ember/object';
 
-export default Component.extend({
-  tagName: 'iframe',
-  attributeBindings: ['src'],
-  layout: componentLayout,
+export default class XIframeComponent extends Component {
+  @service('window-messenger-client')
+  client;
 
-  client: service('window-messenger-client'),
+  @action
+  register(element) {
+    this.client.addTarget(this.args.target, element.contentWindow);
+  }
 
-  didInsertElement() {
-    this._super();
-    this.client.addTarget(this.target, this.element.contentWindow);
-  },
-
-  willDestroyElement() {
-    this._super();
-    this.client.removeTarget(this.target);
-  },
-});
+  @action
+  unregister() {
+    this.client.removeTarget(this.args.target);
+  }
+}
