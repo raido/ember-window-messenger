@@ -19,9 +19,7 @@ module.exports = {
   env: {
     browser: true,
   },
-  rules: {
-    'ember/classic-decorator-hooks': 'off', // need to setup client/server messagebus differently
-  },
+  rules: {},
   overrides: [
     // node files
     {

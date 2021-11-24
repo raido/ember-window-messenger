@@ -16,14 +16,6 @@ export default class WindowMessengerClientService extends Service {
 
   targetOriginMap = {}; // This is set from environment config automatically
 
-  init() {
-    super.init();
-    this.windowMessengerEvents.on(
-      'from:ember-window-messenger-server',
-      this._onMessage
-    );
-  }
-
   /**
    * Add new contentWindow target
    *
@@ -147,6 +139,8 @@ export default class WindowMessengerClientService extends Service {
     assert(`Target window is not registered for: ${targetName}`, target);
 
     return new EmberPromise((resolve, reject) => {
+      this._lazyRegisterMessagesListener();
+
       let uuid = guidFor(queryObject);
       let query = {
         id: uuid,
@@ -197,6 +191,13 @@ export default class WindowMessengerClientService extends Service {
     }
     delete this.callbacks[id];
   };
+
+  _lazyRegisterMessagesListener() {
+    this.windowMessengerEvents.on(
+      'from:ember-window-messenger-server',
+      this._onMessage
+    );
+  }
 
   willDestroy() {
     super.willDestroy();
