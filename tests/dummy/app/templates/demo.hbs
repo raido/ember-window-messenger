@@ -9,11 +9,11 @@
   />
 </div>
 
-<h4>Got server query: {{model}}</h4>
+<h4>Got server query: {{this.model}}</h4>
 
-<button {{action 'askTarget1'}}>Target-1 - What is your name?</button>
-<button {{action 'openPopup'}}>Popup (new window) example</button>
+<button type="button" {{on "click" this.askTarget1}}>Target-1 - What is your name?</button>
+<button type="button" {{on "click" this.openPopup}}>Popup (new window) example</button>
 
-{{#if popup}}
-  <button {{action 'askPopup'}}>Popup - What is your name?</button>
+{{#if this.popup}}
+  <button type="button" {{on "click" this.askPopup}}>Popup - What is your name?</button>
 {{/if}}
