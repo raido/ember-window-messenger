@@ -55,6 +55,7 @@ module.exports = function (environment) {
   }
 
   if (environment === 'production') {
+    ENV.rootURL = '/ember-window-messenger';
     // here you can enable a production-specific feature
   }
 
