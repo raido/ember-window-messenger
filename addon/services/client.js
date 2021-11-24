@@ -2,10 +2,10 @@ import { typeOf } from '@ember/utils';
 import { Promise as EmberPromise } from 'rsvp';
 import { assert } from '@ember/debug';
 import { dasherize } from '@ember/string';
-import { run } from '@ember/runloop';
+import { join as runJoin } from '@ember/runloop';
 import { guidFor } from '@ember/object/internals';
 import Service, { inject as service } from '@ember/service';
-import { set, aliasMethod } from '@ember/object';
+import { set } from '@ember/object';
 
 export default Service.extend({
   windowMessengerEvents: service(),
@@ -159,10 +159,10 @@ export default Service.extend({
 
       this.callbacks[uuid] = {
         success: (json) => {
-          run.join(null, resolve, json);
+          runJoin(null, resolve, json);
         },
         error: (json) => {
-          run.join(null, reject, json);
+          runJoin(null, reject, json);
         },
       };
       target.postMessage(JSON.stringify(query), targetOrigin);
@@ -170,11 +170,15 @@ export default Service.extend({
   },
 
   /**
-   * Alias to fetch method, for providing semantic sugar
+   * Fetch data from server side
    *
-   * @public
+   * @param  {String} path
+   * @param  {Object} queryParams
+   * @return {Promise}
    */
-  rpc: aliasMethod('fetch'),
+  rpc(path, queryParams) {
+    return this.fetch(path, queryParams);
+  },
 
   /**
    * Handle message event from Messenger Events
