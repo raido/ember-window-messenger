@@ -1,38 +1,41 @@
 import { A } from '@ember/array';
-import { bind as runBind } from '@ember/runloop';
-import Evented from '@ember/object/evented';
 import Service from '@ember/service';
-import { computed, set } from '@ember/object';
 
-export default Service.extend(Evented, {
-  window,
-  targetOriginMap: null,
-  allowedOrigins: computed('targetOriginMap', function () {
+export default class WindowMessengerEventService extends Service {
+  registeredEvents = {};
+
+  targetOriginMap = {}; // This is set from environment config automatically
+
+  get allowedOrigins() {
     let map = this.targetOriginMap;
     return A(
       Object.keys(map).map((key) => {
         return map[key];
       })
     );
-  }),
-  eventListener: null,
+  }
 
-  init() {
-    this._super(...arguments);
-    let listener = runBind(this, '_onMessage');
-    this._getWindow().addEventListener(
-      'message',
-      set(this, 'eventListener', listener)
-    );
-  },
+  constructor() {
+    super();
+    window.addEventListener('message', this._onMessage);
+  }
 
-  /**
-   * @private
-   * @return {Window}
-   */
-  _getWindow() {
-    return this.window;
-  },
+  on(eventName, callback) {
+    this.registeredEvents[eventName] = callback;
+  }
+
+  off(eventName, callback) {
+    if (this.registeredEvents[eventName] === callback) {
+      this.registeredEvents[eventName] = null;
+    }
+  }
+
+  trigger(eventName, message, event) {
+    const cb = this.registeredEvents[eventName];
+    if (cb) {
+      cb(message, event);
+    }
+  }
 
   /**
    * Check if message origin is allowed
@@ -44,7 +47,7 @@ export default Service.extend(Evented, {
 
   _isOriginAllowed(origin) {
     return this.allowedOrigins.includes(origin);
-  },
+  }
 
   _parseMessage(data) {
     let message = null;
@@ -56,9 +59,9 @@ export default Service.extend(Evented, {
       }
     }
     return message;
-  },
+  }
 
-  _onMessage(event) {
+  _onMessage = (event) => {
     if (this._isOriginAllowed(event.origin)) {
       let message = this._parseMessage(event.data);
       if (message !== null) {
@@ -66,11 +69,11 @@ export default Service.extend(Evented, {
       }
     }
     return null;
-  },
+  };
 
   willDestroy() {
-    this._super(...arguments);
+    super.willDestroy();
     // Remove event listener when this service is getting destroyed
-    this._getWindow().removeEventListener('message', this.eventListener);
-  },
-});
+    window.removeEventListener('message', this._onMessage);
+  }
+}

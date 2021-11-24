@@ -1,17 +1,18 @@
-import Evented from '@ember/object/evented';
 import Service, { inject as service } from '@ember/service';
 
-export default Service.extend(Evented, {
-  windowMessengerEvents: service(),
+export default class WindowMessengerServerService extends Service {
+  @service('window-messenger-events')
+  windowMessengerEvents;
+
+  registeredResources = {};
 
   init() {
-    this._super(...arguments);
+    super.init();
     this.windowMessengerEvents.on(
       'from:ember-window-messenger-client',
-      this,
       this._onMessage
     );
-  },
+  }
 
   /**
    * Send response to back to client
@@ -29,7 +30,7 @@ export default Service.extend(Evented, {
       error: hasError,
     };
     event.source.postMessage(JSON.stringify(query), event.origin);
-  },
+  }
 
   /**
    * Handle message that we got from Messenger Events
@@ -37,7 +38,7 @@ export default Service.extend(Evented, {
    * @param  {Object} message
    * @param  {Object} event
    */
-  _onMessage(message, event) {
+  _onMessage = (message, event) => {
     this.trigger(
       message.name,
       (response) => {
@@ -48,14 +49,30 @@ export default Service.extend(Evented, {
       },
       message.query
     );
-  },
+  };
 
   willDestroy() {
-    this._super(...arguments);
+    super.willDestroy();
     this.windowMessengerEvents.off(
       'from:ember-window-messenger-client',
-      this,
       this._onMessage
     );
-  },
-});
+  }
+
+  on(resourceName, callback) {
+    this.registeredResources[resourceName] = callback;
+  }
+
+  off(resourceName, callback) {
+    if (this.registeredResources[resourceName] === callback) {
+      this.registeredResources[resourceName] = null;
+    }
+  }
+
+  trigger(resourceName, resolve, reject, query) {
+    const cb = this.registeredResources[resourceName];
+    if (cb) {
+      cb(resolve, reject, query);
+    }
+  }
+}

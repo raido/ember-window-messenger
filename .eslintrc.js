@@ -21,7 +21,6 @@ module.exports = {
   },
   rules: {
     'ember/classic-decorator-hooks': 'off', // need to setup client/server messagebus differently
-    'ember/no-classic-classes': 'off', // need get rid of Evented mixin first
   },
   overrides: [
     // node files
