@@ -5,7 +5,7 @@
 
 This Ember addon is a lightweight postMessage client/server implementation. It is built on promises so the `fetch` and `rpc` methods can be used directly in your route `model()` hooks.
 
-For changelog see [CHANGELOG.md](https://github.com/raido/ember-window-messenger/blob/master/CHANGELOG.md)
+For changelog see [CHANGELOG.md](https://github.com/raido/ember-window-messenger/blob/main/CHANGELOG.md)
 
 **It supports JSON only messages for now**
 
