@@ -21,6 +21,9 @@ export default class WindowMessengerEventService extends Service {
   }
 
   on(eventName, callback) {
+    if (eventName in this.registeredEvents) {
+      return;
+    }
     this.registeredEvents[eventName] = callback;
   }
 

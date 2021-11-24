@@ -6,14 +6,6 @@ export default class WindowMessengerServerService extends Service {
 
   registeredResources = {};
 
-  init() {
-    super.init();
-    this.windowMessengerEvents.on(
-      'from:ember-window-messenger-client',
-      this._onMessage
-    );
-  }
-
   /**
    * Send response to back to client
    *
@@ -51,6 +43,13 @@ export default class WindowMessengerServerService extends Service {
     );
   };
 
+  _lazyRegisterMessagesListener() {
+    this.windowMessengerEvents.on(
+      'from:ember-window-messenger-client',
+      this._onMessage
+    );
+  }
+
   willDestroy() {
     super.willDestroy();
     this.windowMessengerEvents.off(
@@ -60,6 +59,7 @@ export default class WindowMessengerServerService extends Service {
   }
 
   on(resourceName, callback) {
+    this._lazyRegisterMessagesListener();
     this.registeredResources[resourceName] = callback;
   }
 
