@@ -10,11 +10,22 @@ export default class DemoController extends Controller {
   @service('window-messenger-client')
   client;
 
+  @service('router')
+  router;
+
   @tracked
   popup = false;
 
   @tracked
   model = null;
+
+  get clientServerOneSrc() {
+    return this.router.urlFor('client-server-one');
+  }
+
+  get clientServerTwoSrc() {
+    return this.router.urlFor('client-server-two');
+  }
 
   @action
   askTarget1() {
@@ -26,7 +37,7 @@ export default class DemoController extends Controller {
   @action
   openPopup() {
     let win = window.open(
-      '/client-server-two/example',
+      this.router.urlFor('client-server-two.example'),
       'Example popup',
       'toolbar=no,resizable=no,width=400,height=400'
     );

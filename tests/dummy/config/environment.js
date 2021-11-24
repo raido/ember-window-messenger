@@ -1,5 +1,8 @@
 'use strict';
 
+const TESTS_DEV_SERVER_PORT =
+  process.env.EMBER_CLI_INJECT_LIVE_RELOAD_PORT || 7357;
+
 module.exports = function (environment) {
   let ENV = {
     modulePrefix: 'dummy',
@@ -49,13 +52,20 @@ module.exports = function (environment) {
     ENV.APP.autoboot = false;
 
     ENV.APP['ember-window-messenger'] = {
-      parent: 'http://localhost:7357',
-      'target-1': 'http://localhost:7357',
+      parent: `http://localhost:${TESTS_DEV_SERVER_PORT}`,
+      'target-1': `http://localhost:${TESTS_DEV_SERVER_PORT}`,
     };
   }
 
   if (environment === 'production') {
-    // here you can enable a production-specific feature
+    ENV.rootURL = '/ember-window-messenger';
+    ENV.locationType = 'hash';
+    ENV.APP['ember-window-messenger'] = {
+      parent: 'https://raido.github.io',
+      'target-1': 'https://raido.github.io',
+      'target-2': 'https://raido.github.io',
+      popup: 'https://raido.github.io',
+    };
   }
 
   return ENV;
