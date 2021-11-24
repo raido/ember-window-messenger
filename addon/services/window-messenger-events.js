@@ -8,7 +8,7 @@ export default Service.extend(Evented, {
   window,
   targetOriginMap: null,
   allowedOrigins: computed('targetOriginMap', function () {
-    let map = this.get('targetOriginMap');
+    let map = this.targetOriginMap;
     return A(
       Object.keys(map).map((key) => {
         return map[key];
@@ -31,7 +31,7 @@ export default Service.extend(Evented, {
    * @return {Window}
    */
   _getWindow() {
-    return this.get('window');
+    return this.window;
   },
 
   /**
@@ -43,7 +43,7 @@ export default Service.extend(Evented, {
    */
 
   _isOriginAllowed(origin) {
-    return this.get('allowedOrigins').includes(origin);
+    return this.allowedOrigins.includes(origin);
   },
 
   _parseMessage(data) {
@@ -71,6 +71,6 @@ export default Service.extend(Evented, {
   willDestroy() {
     this._super(...arguments);
     // Remove event listener when this service is getting destroyed
-    this._getWindow().removeEventListener('message', this.get('eventListener'));
+    this._getWindow().removeEventListener('message', this.eventListener);
   },
 });

@@ -20,15 +20,8 @@ module.exports = {
     browser: true,
   },
   rules: {
-    'ember/no-get': 'off',
-    'ember/no-classic-classes': 'off',
-    'ember/no-controller-access-in-routes': 'off',
-    'ember/no-actions-hash': 'off',
-    'ember/no-component-lifecycle-hooks': 'off',
-    'ember/require-super-in-lifecycle-hooks': 'off',
-    'ember/no-jquery': 'off',
-    'ember/require-tagless-components': 'off',
-    'ember/no-classic-components': 'off',
+    'ember/classic-decorator-hooks': 'off', // need to setup client/server messagebus differently
+    'ember/no-classic-classes': 'off', // need get rid of Evented mixin first
   },
   overrides: [
     // node files
@@ -53,9 +46,6 @@ module.exports = {
       },
       plugins: ['node'],
       extends: ['plugin:node/recommended'],
-      rules: {
-        'node/no-missing-require': 'off',
-      },
     },
     {
       // Test files:

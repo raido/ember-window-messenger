@@ -6,7 +6,7 @@ export default Service.extend(Evented, {
 
   init() {
     this._super(...arguments);
-    this.get('windowMessengerEvents').on(
+    this.windowMessengerEvents.on(
       'from:ember-window-messenger-client',
       this,
       this._onMessage
@@ -52,7 +52,7 @@ export default Service.extend(Evented, {
 
   willDestroy() {
     this._super(...arguments);
-    this.get('windowMessengerEvents').off(
+    this.windowMessengerEvents.off(
       'from:ember-window-messenger-client',
       this,
       this._onMessage

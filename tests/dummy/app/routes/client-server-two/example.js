@@ -1,10 +1,11 @@
 import { inject as service } from '@ember/service';
 import Route from '@ember/routing/route';
 
-export default Route.extend({
-  client: service('window-messenger-client'),
+export default class ClientServerTwoExampleRoute extends Route {
+  @service('window-messenger-client')
+  client;
 
   model() {
-    return this.get('client').fetch('demo-data');
-  },
-});
+    return this.client.fetch('demo-data');
+  }
+}
