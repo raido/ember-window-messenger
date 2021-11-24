@@ -5,7 +5,6 @@ import { dasherize } from '@ember/string';
 import { join as runJoin } from '@ember/runloop';
 import { guidFor } from '@ember/object/internals';
 import Service, { inject as service } from '@ember/service';
-import { set } from '@ember/object';
 
 export default class WindowMessengerClientService extends Service {
   @service
@@ -24,7 +23,7 @@ export default class WindowMessengerClientService extends Service {
    * @public
    */
   addTarget(name, targetWindow) {
-    set(this.targets, name, targetWindow);
+    this.targets[name] = targetWindow;
   }
 
   /**
