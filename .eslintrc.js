@@ -21,7 +21,6 @@ module.exports = {
   },
   rules: {
     'ember/no-classic-classes': 'off',
-    'ember/no-controller-access-in-routes': 'off',
     'ember/no-actions-hash': 'off',
     'ember/no-component-lifecycle-hooks': 'off',
     'ember/require-tagless-components': 'off',
