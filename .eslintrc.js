@@ -19,7 +19,17 @@ module.exports = {
   env: {
     browser: true,
   },
-  rules: {},
+  rules: {
+    'ember/no-get': 'off',
+    'ember/no-classic-classes': 'off',
+    'ember/no-controller-access-in-routes': 'off',
+    'ember/no-actions-hash': 'off',
+    'ember/no-component-lifecycle-hooks': 'off',
+    'ember/require-super-in-lifecycle-hooks': 'off',
+    'ember/no-jquery': 'off',
+    'ember/require-tagless-components': 'off',
+    'ember/no-classic-components': 'off',
+  },
   overrides: [
     // node files
     {
@@ -43,11 +53,17 @@ module.exports = {
       },
       plugins: ['node'],
       extends: ['plugin:node/recommended'],
+      rules: {
+        'node/no-missing-require': 'off',
+      },
     },
     {
       // Test files:
       files: ['tests/**/*-test.{js,ts}'],
       extends: ['plugin:qunit/recommended'],
+      rules: {
+        'qunit/require-expect': 'off',
+      },
     },
   ],
 };

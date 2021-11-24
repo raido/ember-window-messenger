@@ -18,9 +18,13 @@ export default Service.extend({
     this._super(...arguments);
     this.setProperties({
       targets: {},
-      callbacks: {}
+      callbacks: {},
     });
-    this.get('windowMessengerEvents').on('from:ember-window-messenger-server', this, this._onMessage);
+    this.get('windowMessengerEvents').on(
+      'from:ember-window-messenger-server',
+      this,
+      this._onMessage
+    );
   },
 
   /**
@@ -56,7 +60,7 @@ export default Service.extend({
     if (!(name in this.targets)) {
       return false;
     }
-    return (this.targets[name].opener && !this.targets[name].opener.closed);
+    return this.targets[name].opener && !this.targets[name].opener.closed;
   },
 
   /*
@@ -78,7 +82,7 @@ export default Service.extend({
     let resource = split[1] || split[0];
     return {
       target: split[1] ? split[0] : 'parent',
-      resource: dasherize(resource)
+      resource: dasherize(resource),
     };
   },
 
@@ -110,7 +114,9 @@ export default Service.extend({
    * @return {Object}
    */
   _targetFor(target) {
-    return this._isTargetParent(target) ? this._getWindowParent() : this.targets[target];
+    return this._isTargetParent(target)
+      ? this._getWindowParent()
+      : this.targets[target];
   },
 
   /**
@@ -135,7 +141,10 @@ export default Service.extend({
     let queryObject = queryParams ? assign({}, queryParams) : {};
 
     let targetOrigin = this._targetOriginFor(targetName);
-    assert(`Target origin for target: ${targetName} does not exist`, targetOrigin);
+    assert(
+      `Target origin for target: ${targetName} does not exist`,
+      targetOrigin
+    );
 
     let target = this._targetFor(targetName);
     assert(`Target window is not registered for: ${targetName}`, target);
@@ -146,7 +155,7 @@ export default Service.extend({
         id: uuid,
         type: 'ember-window-messenger-client',
         name: uri.resource,
-        query: queryObject
+        query: queryObject,
       };
 
       this.callbacks[uuid] = {
@@ -155,7 +164,7 @@ export default Service.extend({
         },
         error: (json) => {
           run.join(null, reject, json);
-        }
+        },
       };
       target.postMessage(JSON.stringify(query), targetOrigin);
     }, `ember-window-messenger: ${path}`);
@@ -190,6 +199,10 @@ export default Service.extend({
 
   willDestroy() {
     this._super(...arguments);
-    this.get('windowMessengerEvents').off('from:ember-window-messenger-server', this, this._onMessage);
-  }
+    this.get('windowMessengerEvents').off(
+      'from:ember-window-messenger-server',
+      this,
+      this._onMessage
+    );
+  },
 });

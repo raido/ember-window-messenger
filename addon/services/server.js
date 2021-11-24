@@ -6,7 +6,11 @@ export default Service.extend(Evented, {
 
   init() {
     this._super(...arguments);
-    this.get('windowMessengerEvents').on('from:ember-window-messenger-client', this, this._onMessage);
+    this.get('windowMessengerEvents').on(
+      'from:ember-window-messenger-client',
+      this,
+      this._onMessage
+    );
   },
 
   /**
@@ -22,7 +26,7 @@ export default Service.extend(Evented, {
       id: uuid,
       type: 'ember-window-messenger-server',
       response: payload,
-      error: hasError
+      error: hasError,
     };
     event.source.postMessage(JSON.stringify(query), event.origin);
   },
@@ -34,15 +38,24 @@ export default Service.extend(Evented, {
    * @param  {Object} event
    */
   _onMessage(message, event) {
-    this.trigger(message.name, (response) => {
-      this._respond(message.id, response, event, false);
-    }, (response) => {
-      this._respond(message.id, response, event, true);
-    }, message.query);
+    this.trigger(
+      message.name,
+      (response) => {
+        this._respond(message.id, response, event, false);
+      },
+      (response) => {
+        this._respond(message.id, response, event, true);
+      },
+      message.query
+    );
   },
 
   willDestroy() {
     this._super(...arguments);
-    this.get('windowMessengerEvents').off('from:ember-window-messenger-client', this, this._onMessage);
-  }
+    this.get('windowMessengerEvents').off(
+      'from:ember-window-messenger-client',
+      this,
+      this._onMessage
+    );
+  },
 });

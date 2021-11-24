@@ -21,10 +21,10 @@ module.exports = function (environment) {
       // Here you can pass flags/options to your application instance
       // when it is created
       'ember-window-messenger': {
-        'parent': 'http://localhost:4200',
+        parent: 'http://localhost:4200',
         'target-1': 'http://localhost:4200',
         'target-2': 'http://localhost:4200',
-        'popup': 'http://localhost:4200'
+        popup: 'http://localhost:4200',
       },
     },
   };
@@ -49,8 +49,8 @@ module.exports = function (environment) {
     ENV.APP.autoboot = false;
 
     ENV.APP['ember-window-messenger'] = {
-      'parent': 'http://localhost:7357',
-      'target-1': 'http://localhost:7357'
+      parent: 'http://localhost:7357',
+      'target-1': 'http://localhost:7357',
     };
   }
 

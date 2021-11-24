@@ -7,18 +7,23 @@ import { computed, set } from '@ember/object';
 export default Service.extend(Evented, {
   window,
   targetOriginMap: null,
-  allowedOrigins: computed('targetOriginMap', function() {
+  allowedOrigins: computed('targetOriginMap', function () {
     let map = this.get('targetOriginMap');
-    return A(Object.keys(map).map((key) => {
-      return map[key];
-    }));
+    return A(
+      Object.keys(map).map((key) => {
+        return map[key];
+      })
+    );
   }),
   eventListener: null,
 
   init() {
     this._super(...arguments);
     let listener = run.bind(this, '_onMessage');
-    this._getWindow().addEventListener('message', set(this, 'eventListener', listener));
+    this._getWindow().addEventListener(
+      'message',
+      set(this, 'eventListener', listener)
+    );
   },
 
   /**
@@ -46,7 +51,9 @@ export default Service.extend(Evented, {
     if (typeof data === 'string') {
       try {
         message = JSON.parse(data);
-      } catch(e) {/* Ignored */}
+      } catch (e) {
+        /* Ignored */
+      }
     }
     return message;
   },
@@ -65,5 +72,5 @@ export default Service.extend(Evented, {
     this._super(...arguments);
     // Remove event listener when this service is getting destroyed
     this._getWindow().removeEventListener('message', this.get('eventListener'));
-  }
+  },
 });

@@ -6,5 +6,5 @@ export default Client.extend({
   init() {
     this._super(...arguments);
     this.set('targetOriginMap', config.APP['ember-window-messenger'] || {});
-  }
+  },
 });
