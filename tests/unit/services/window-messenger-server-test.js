@@ -1,4 +1,3 @@
-import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { settled } from '@ember/test-helpers';
@@ -30,6 +29,7 @@ module('Unit | Service | window messenger server', function (hooks) {
   });
 
   test('it should receive query from client', async function (assert) {
+    assert.expect(1);
     let server = this.owner.lookup('service:window-messenger-server');
     let client = this.owner.lookup('service:window-messenger-client');
 
@@ -51,10 +51,8 @@ module('Unit | Service | window messenger server', function (hooks) {
       assert.ok(true);
     });
 
-    run(() => {
-      server.destroy();
-      client.fetch('client-request');
-    });
+    server.destroy();
+    client.fetch('client-request');
     await settled();
   });
 });

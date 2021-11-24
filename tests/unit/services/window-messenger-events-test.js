@@ -1,4 +1,3 @@
-import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 
@@ -19,9 +18,7 @@ module('Unit | Service | window messenger events', function (hooks) {
 
     service.on('from:test-dummy', (payload) => {
       assert.equal(payload.name, 'hello-world');
-      run(() => {
-        service.destroy();
-      });
+      service.destroy();
     });
     // send first message
     window.postMessage(message, '*');
