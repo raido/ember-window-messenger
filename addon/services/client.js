@@ -19,7 +19,7 @@ export default Service.extend({
       targets: {},
       callbacks: {},
     });
-    this.get('windowMessengerEvents').on(
+    this.windowMessengerEvents.on(
       'from:ember-window-messenger-server',
       this,
       this._onMessage
@@ -44,7 +44,7 @@ export default Service.extend({
    * @public
    */
   removeTarget(name) {
-    delete this.get('targets')[name];
+    delete this.targets[name];
   },
 
   /**
@@ -124,7 +124,7 @@ export default Service.extend({
    * @return {Object}
    */
   _targetOriginFor(target) {
-    return this.get(`targetOriginMap.${target}`);
+    return this.targetOriginMap[target];
   },
 
   /**
@@ -202,7 +202,7 @@ export default Service.extend({
 
   willDestroy() {
     this._super(...arguments);
-    this.get('windowMessengerEvents').off(
+    this.windowMessengerEvents.off(
       'from:ember-window-messenger-server',
       this,
       this._onMessage

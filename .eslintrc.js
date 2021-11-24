@@ -20,7 +20,6 @@ module.exports = {
     browser: true,
   },
   rules: {
-    'ember/no-get': 'off',
     'ember/no-classic-classes': 'off',
     'ember/no-controller-access-in-routes': 'off',
     'ember/no-actions-hash': 'off',
@@ -53,9 +52,6 @@ module.exports = {
       },
       plugins: ['node'],
       extends: ['plugin:node/recommended'],
-      rules: {
-        'node/no-missing-require': 'off',
-      },
     },
     {
       // Test files:

@@ -6,6 +6,6 @@ export default Controller.extend({
   router: service(),
 
   hideHeader: computed('router.currentURL', function () {
-    return this.get('router.currentURL').indexOf('client-') !== -1;
+    return this.router.currentURL.indexOf('client-') !== -1;
   }),
 });

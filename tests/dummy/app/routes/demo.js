@@ -8,7 +8,7 @@ export default Route.extend({
   init() {
     this._super(...arguments);
 
-    this.get('server').on('demo-data', (resolve, reject, query) => {
+    this.server.on('demo-data', (resolve, reject, query) => {
       this.controller.set('model', JSON.stringify(query));
       if (query.action === 'nope') {
         reject('No can do');
@@ -23,11 +23,9 @@ export default Route.extend({
 
   actions: {
     askTarget1() {
-      this.get('client')
-        .fetch('target-1:name')
-        .then((name) => {
-          this.controller.set('model', name);
-        });
+      this.client.fetch('target-1:name').then((name) => {
+        this.controller.set('model', name);
+      });
     },
 
     openPopup() {
@@ -36,16 +34,14 @@ export default Route.extend({
         'Example popup',
         'toolbar=no,resizable=no,width=400,height=400'
       );
-      this.get('client').addTarget('popup', win);
+      this.client.addTarget('popup', win);
       this.controller.set('popup', true);
     },
 
     askPopup() {
-      this.get('client')
-        .fetch('popup:popup-name')
-        .then((name) => {
-          this.controller.set('model', name);
-        });
+      this.client.fetch('popup:popup-name').then((name) => {
+        this.controller.set('model', name);
+      });
     },
   },
 });

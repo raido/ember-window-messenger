@@ -8,26 +8,22 @@ export default Route.extend({
   init() {
     this._super(...arguments);
 
-    this.get('server').on('name', (resolve) => {
+    this.server.on('name', (resolve) => {
       resolve('My name is: Target 1 - client/server one');
     });
   },
 
   actions: {
     askParent() {
-      this.get('client')
-        .fetch('demo-data', { action: 'yes' })
-        .then((response) => {
-          this.controller.set('model', JSON.stringify(response));
-        });
+      this.client.fetch('demo-data', { action: 'yes' }).then((response) => {
+        this.controller.set('model', JSON.stringify(response));
+      });
     },
 
     askParentFail() {
-      this.get('client')
-        .fetch('demo-data', { action: 'nope' })
-        .catch((response) => {
-          this.controller.set('model', response);
-        });
+      this.client.fetch('demo-data', { action: 'nope' }).catch((response) => {
+        this.controller.set('model', response);
+      });
     },
   },
 });

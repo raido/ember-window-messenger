@@ -7,7 +7,7 @@ export default Route.extend({
   init() {
     this._super(...arguments);
 
-    this.get('server').on('popup-name', (resolve) => {
+    this.server.on('popup-name', (resolve) => {
       resolve('I am a popup window :)');
     });
   },

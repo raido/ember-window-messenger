@@ -5,6 +5,6 @@ export default Route.extend({
   client: service('window-messenger-client'),
 
   model() {
-    return this.get('client').fetch('demo-data');
+    return this.client.fetch('demo-data');
   },
 });
