@@ -137,7 +137,7 @@ export default Service.extend({
   fetch(path, queryParams) {
     let uri = this._parseURI(path);
     let targetName = uri.target;
-    let queryObject = queryParams ? {...queryParams} : {};
+    let queryObject = queryParams ? { ...queryParams } : {};
 
     let targetOrigin = this._targetOriginFor(targetName);
     assert(
