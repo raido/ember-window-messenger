@@ -6,5 +6,5 @@ export default Route.extend({
 
   model() {
     return this.get('client').fetch('demo-data');
-  }
+  },
 });

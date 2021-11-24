@@ -2,10 +2,10 @@ import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 
-module('Unit | Service | window messenger events', function(hooks) {
+module('Unit | Service | window messenger events', function (hooks) {
   setupTest(hooks);
 
-  test('it should register and deregister message event listener', async function(assert) {
+  test('it should register and deregister message event listener', async function (assert) {
     assert.expect(1);
 
     let service = this.owner.lookup('service:window-messenger-events');
@@ -14,7 +14,7 @@ module('Unit | Service | window messenger events', function(hooks) {
       id: +new Date(),
       type: 'test-dummy',
       name: 'hello-world',
-      query: {}
+      query: {},
     });
 
     service.on('from:test-dummy', (payload) => {
@@ -30,7 +30,7 @@ module('Unit | Service | window messenger events', function(hooks) {
     window.postMessage(message, '*');
   });
 
-  test('it should handle message, if not allowed origin', async function(assert) {
+  test('it should handle message, if not allowed origin', async function (assert) {
     assert.expect(0);
 
     let service = this.owner.lookup('service:window-messenger-events');
@@ -38,7 +38,7 @@ module('Unit | Service | window messenger events', function(hooks) {
       id: +new Date(),
       type: 'test-dummy',
       name: 'hello-world',
-      query: {}
+      query: {},
     });
 
     service.on('from:test-dummy', () => {
@@ -46,5 +46,5 @@ module('Unit | Service | window messenger events', function(hooks) {
     });
 
     window.postMessage(message, 'http://localhost:9999');
-  })
+  });
 });

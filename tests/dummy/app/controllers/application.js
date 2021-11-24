@@ -5,7 +5,7 @@ import { inject as service } from '@ember/service';
 export default Controller.extend({
   router: service(),
 
-  hideHeader: computed('router.currentURL', function() {
+  hideHeader: computed('router.currentURL', function () {
     return this.get('router.currentURL').indexOf('client-') !== -1;
-  })
+  }),
 });

@@ -10,5 +10,5 @@ export default Route.extend({
     this.get('server').on('popup-name', (resolve) => {
       resolve('I am a popup window :)');
     });
-  }
+  },
 });

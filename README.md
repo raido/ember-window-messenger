@@ -1,6 +1,6 @@
 # ember-window-messenger
 
-[![Build Status](https://travis-ci.org/raido/ember-window-messenger.svg?branch=master)](https://travis-ci.org/raido/ember-window-messenger)
+[![CI](https://github.com/raido/ember-window-messenger/actions/workflows/ci.yml/badge.svg)](https://github.com/raido/ember-window-messenger/actions/workflows/ci.yml)
 [![npm version](https://badge.fury.io/js/ember-window-messenger.svg)](https://badge.fury.io/js/ember-window-messenger)
 
 This Ember addon is a lightweight postMessage client/server implementation. It is built on promises so the `fetch` and `rpc` methods can be used directly in your route `model()` hooks.
@@ -8,6 +8,14 @@ This Ember addon is a lightweight postMessage client/server implementation. It i
 For changelog see [CHANGELOG.md](https://github.com/raido/ember-window-messenger/blob/master/CHANGELOG.md)
 
 **It supports JSON only messages for now**
+
+
+Compatibility
+------------------------------------------------------------------------------
+
+* Ember.js v3.20 or above
+* Ember CLI v3.20 or above
+* Node.js v12 or above
 
 ## Usage
 
@@ -195,7 +203,6 @@ Installation
 * `ember serve`
 * Visit the dummy application at [http://localhost:4200](http://localhost:4200).
 
-For more information on using ember-cli, visit [https://ember-cli.com/](https://ember-cli.com/).
 
 License
 ------------------------------------------------------------------------------
