@@ -14,11 +14,12 @@ export default class WindowMessengerClientService extends Service {
   callbacks = {};
   targets = {};
 
+  targetOriginMap = {}; // This is set from environment config automatically
+
   init() {
     super.init();
     this.windowMessengerEvents.on(
       'from:ember-window-messenger-server',
-      this,
       this._onMessage
     );
   }
@@ -183,7 +184,7 @@ export default class WindowMessengerClientService extends Service {
    * @private
    * @param  {Object} message
    */
-  _onMessage(message) {
+  _onMessage = (message) => {
     let { response, id, error } = message;
     let inQueue = this.callbacks[id];
 
@@ -195,13 +196,12 @@ export default class WindowMessengerClientService extends Service {
       }
     }
     delete this.callbacks[id];
-  }
+  };
 
   willDestroy() {
     super.willDestroy();
     this.windowMessengerEvents.off(
       'from:ember-window-messenger-server',
-      this,
       this._onMessage
     );
   }
