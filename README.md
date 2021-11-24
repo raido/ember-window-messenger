@@ -9,6 +9,14 @@ For changelog see [CHANGELOG.md](https://github.com/raido/ember-window-messenger
 
 **It supports JSON only messages for now**
 
+
+Compatibility
+------------------------------------------------------------------------------
+
+* Ember.js v3.20 or above
+* Ember CLI v3.20 or above
+* Node.js v12 or above
+
 ## Usage
 
 `ember install ember-window-messenger`
@@ -195,7 +203,6 @@ Installation
 * `ember serve`
 * Visit the dummy application at [http://localhost:4200](http://localhost:4200).
 
-For more information on using ember-cli, visit [https://ember-cli.com/](https://ember-cli.com/).
 
 License
 ------------------------------------------------------------------------------
