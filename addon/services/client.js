@@ -4,7 +4,6 @@ import { assert } from '@ember/debug';
 import { dasherize } from '@ember/string';
 import { run } from '@ember/runloop';
 import { guidFor } from '@ember/object/internals';
-import { assign } from '@ember/polyfills';
 import Service, { inject as service } from '@ember/service';
 import { set, aliasMethod } from '@ember/object';
 
@@ -138,7 +137,7 @@ export default Service.extend({
   fetch(path, queryParams) {
     let uri = this._parseURI(path);
     let targetName = uri.target;
-    let queryObject = queryParams ? assign({}, queryParams) : {};
+    let queryObject = queryParams ? {...queryParams} : {};
 
     let targetOrigin = this._targetOriginFor(targetName);
     assert(
