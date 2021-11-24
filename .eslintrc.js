@@ -25,7 +25,6 @@ module.exports = {
     'ember/no-actions-hash': 'off',
     'ember/no-component-lifecycle-hooks': 'off',
     'ember/require-super-in-lifecycle-hooks': 'off',
-    'ember/no-jquery': 'off',
     'ember/require-tagless-components': 'off',
     'ember/no-classic-components': 'off',
   },

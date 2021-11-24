@@ -10,7 +10,7 @@ export default Component.extend({
   client: service('window-messenger-client'),
 
   didInsertElement() {
-    this.client.addTarget(this.target, this.$().get(0).contentWindow);
+    this.client.addTarget(this.target, this.element.contentWindow);
   },
 
   willDestroyElement() {
