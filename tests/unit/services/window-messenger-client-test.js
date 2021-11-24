@@ -1,4 +1,3 @@
-import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { settled } from '@ember/test-helpers';
@@ -7,6 +6,7 @@ module('Unit | Service | window messenger client', function (hooks) {
   setupTest(hooks);
 
   test('it should receive response from the server for targeted request', async function (assert) {
+    assert.expect(1);
     let client = this.owner.lookup('service:window-messenger-client');
     client.addTarget('target-1', window);
     let server = this.owner.lookup('service:window-messenger-server');
@@ -38,6 +38,7 @@ module('Unit | Service | window messenger client', function (hooks) {
   });
 
   test('it should receive response from the server', async function (assert) {
+    assert.expect(1);
     let client = this.owner.lookup('service:window-messenger-client');
     let server = this.owner.lookup('service:window-messenger-server');
 
@@ -50,6 +51,7 @@ module('Unit | Service | window messenger client', function (hooks) {
   });
 
   test('it should receive response from the server - rpc', async function (assert) {
+    assert.expect(1);
     let client = this.owner.lookup('service:window-messenger-client');
     let server = this.owner.lookup('service:window-messenger-server');
 
@@ -62,6 +64,7 @@ module('Unit | Service | window messenger client', function (hooks) {
   });
 
   test('it should receive rejection from the server', async function (assert) {
+    assert.expect(1);
     let client = this.owner.lookup('service:window-messenger-client');
     let server = this.owner.lookup('service:window-messenger-server');
 
@@ -74,6 +77,7 @@ module('Unit | Service | window messenger client', function (hooks) {
   });
 
   test('it should receive object from the server', async function (assert) {
+    assert.expect(1);
     let client = this.owner.lookup('service:window-messenger-client');
     let server = this.owner.lookup('service:window-messenger-server');
 
@@ -92,6 +96,7 @@ module('Unit | Service | window messenger client', function (hooks) {
   });
 
   test('it should complex rejection object from the server', async function (assert) {
+    assert.expect(1);
     let client = this.owner.lookup('service:window-messenger-client');
     let server = this.owner.lookup('service:window-messenger-server');
 
@@ -119,9 +124,7 @@ module('Unit | Service | window messenger client', function (hooks) {
     });
     client.fetch('client-request').then(() => assert.ok(true));
 
-    run(() => {
-      client.destroy();
-    });
+    client.destroy();
     await settled();
   });
 });
