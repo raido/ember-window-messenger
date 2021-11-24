@@ -83,8 +83,8 @@ jobs:
           #ember-beta,
           ember-default-with-jquery,
           ember-classic,
-          embroider-safe,
-          embroider-optimized
+          #embroider-safe,
+          #embroider-optimized
         ]
         allow-failure: [false]
         #include:
