@@ -10,10 +10,12 @@ export default Component.extend({
   client: service('window-messenger-client'),
 
   didInsertElement() {
+    this._super();
     this.client.addTarget(this.target, this.element.contentWindow);
   },
 
   willDestroyElement() {
+    this._super();
     this.client.removeTarget(this.target);
   },
 });

@@ -24,7 +24,6 @@ module.exports = {
     'ember/no-controller-access-in-routes': 'off',
     'ember/no-actions-hash': 'off',
     'ember/no-component-lifecycle-hooks': 'off',
-    'ember/require-super-in-lifecycle-hooks': 'off',
     'ember/require-tagless-components': 'off',
     'ember/no-classic-components': 'off',
   },
