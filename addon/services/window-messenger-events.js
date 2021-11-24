@@ -1,5 +1,5 @@
 import { A } from '@ember/array';
-import { run } from '@ember/runloop';
+import { bind as runBind } from '@ember/runloop';
 import Evented from '@ember/object/evented';
 import Service from '@ember/service';
 import { computed, set } from '@ember/object';
@@ -19,7 +19,7 @@ export default Service.extend(Evented, {
 
   init() {
     this._super(...arguments);
-    let listener = run.bind(this, '_onMessage');
+    let listener = runBind(this, '_onMessage');
     this._getWindow().addEventListener(
       'message',
       set(this, 'eventListener', listener)
