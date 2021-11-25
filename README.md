@@ -47,33 +47,60 @@ If you dare, fire up the dummy app in this addon and test it out. Below are the 
 #### Setup server on parent
 
 ```javascript
-import Ember from 'ember';
+// app/service/your-server.js
+import Service, { inject as service } from '@ember/service';
 
-export default Ember.Route.extend({
-  server: Ember.inject.service('window-messenger-server'),
+export default class YourServerService extends Service {
+  @service('window-messenger-server');
+  server;
 
-  init() {
-    this._super(...arguments);
-
-    this.get('server').on('demo-data', (resolve, reject, query) => {
-      resolve('Some data');
-    });
+  setup() {
+    this.server.on('demo-data', this.onDemoDataRequest);
   }
-});
+
+  teardown() {
+    this.server.off('demo-data', this.onDemoDataRequest);
+  }
+
+  onDemoDataRequest = (resolve, reject, query) => {
+    resolve('Some data');
+  }
+}
+
+// app/routes/your-route.js
+import Route from '@ember/routing/route';
+import { inject as service } from '@ember/service';
+
+export default class YourRoute extends Route {
+  @service('your-server');
+  yourServer;
+
+  activate() {
+    super.activate();
+    this.yourServer.setup();
+  }
+
+  deactivate() {
+    super.deactivate();
+    this.yourServer.teardown();
+  }
+}
 ```
 
 #### Fetch from parent
 
 ```javascript
-import Ember from 'ember';
+import Route from '@ember/routing/route';
+import { inject as service } from '@ember/service';
 
-export default Ember.Route.extend({
-  client: Ember.inject.service('window-messenger-client'),
+export default class YourRoute extends Route {
+  @service('window-messenger-client')
+  client;
 
   model() {
-    return this.get('client').fetch('demo-data');
+    return this.client.fetch('demo-data');
   }
-});
+}
 ```
 
 #### Fetch from a specific target
@@ -81,15 +108,17 @@ export default Ember.Route.extend({
 This can be used from parent window to frames/tabs communication.
 
 ```javascript
-import Ember from 'ember';
+import Route from '@ember/routing/route';
+import { inject as service } from '@ember/service';
 
-export default Ember.Route.extend({
-  client: Ember.inject.service('window-messenger-client'),
+export default class YourRoute extends Route {
+  @service('window-messenger-client')
+  client;
 
   model() {
-    return this.get('client').fetch('popup:demo-data');
+    return this.client.fetch('popup:demo-data');
   }
-});
+}
 ```
 
 #### Execute RPC call
@@ -97,19 +126,21 @@ export default Ember.Route.extend({
 Internally it is the same as `fetch`, but provides semantic sugar to your app code.
 
 ```javascript
-import Ember from 'ember';
+import Controller from '@ember/controller';
+import { inject as service } from '@ember/service';
+import { action } from '@ember/object';
 
-export default Ember.Route.extend({
-  client: Ember.inject.service('window-messenger-client'),
+export default class YourController extends Controller {
+  @service('window-messenger-client')
+  client;
 
-  actions {
-    runMe() {
-      this.get('client').rpc('start-worker').then((response) => {
-        // handle response here
-      });
-    }
+  @action
+  runMe() {
+    this.client.rpc('start-worker').then((response) => {
+      // handle response here
+    });
   }
-});
+}
 ```
 
 ### iFrames, popup windows
@@ -120,63 +151,84 @@ If you want to communicate with an iframe or a popup window opened with `window.
 
 ```javascript
 // app/components/x-frame.js
-import Ember from 'ember';
+import Component from '@glimmer/component';
+import { inject as service } from '@ember/service';
 
-export default Ember.Component.extend({
-  client: Ember.inject.service('window-messenger-client'),
+export default class XFrameComponent extends Component {
+  @service('window-messenger-client')
+  client;
 
-  didInsertElement() {
-    this.get('client').addTarget('target-1', this.$().get(0).contentWindow);
+  register(frameElement) {
+    this.client.addTarget(this.args.target, frameElement.contentWindow);
   },
 
-  willDestroyElement() {
-    this.get('client').removeTarget('target-1');
+  unregister() {
+    this.client.removeTarget(this.args.target);
   }
-});
+}
+
+// app/components/x-frame.hbs
+<iframe 
+  ...attributes
+  {{did-insert this.register}}
+  {{will-destory this.unregister}}
+></iframe>
+
+// app/templates/your-route.hbs
+<XFrame src="<url>" @target="target-1"/>
 
 ```
 #### Popup with window.open
 
 ```javascript
-// app/routes/my-route.js
-import Ember from 'ember';
+// app/controller/your-controller.js
+import Controller from '@ember/controller';
+import { inject as service } from '@ember/service';
+import { action } from '@ember/object';
+import { tracked } from '@glimmer/tracking';
 
-export default Ember.Route.extend({
-  client: Ember.inject.service('window-messenger-client'),
+export default class YourController extends Controller {
+  @service('window-messenger-client')
+  client;
 
-  actions: {
-    openPopup() {
-      let win = window.open('/some/path', 'Example popup', 'toolbar=no,resizable=no,width=400,height=400');
-      this.get('client').addTarget('popup', win);
-    },
+  @tracked
+  model = null;
 
-    fetchFromPopup() {
-      this.get('client').fetch('popup:some-data').then((name) => {
-        this.controller.set('model', name);
-      });
-    }
+  @action
+  openPopup() {
+    let win = window.open('/some/path', 'Example popup', 'toolbar=no,resizable=no,width=400,height=400');
+    this.client.addTarget('popup', win);
   }
-});
+
+  @action
+  fetchFromPopup() {
+    this.client.fetch('popup:some-data').then((name) => {
+      this.model = name;
+    });
+  }
+}
 ```
 
 #### Open popup if it isn't already open, or has been closed by the user
 
 ```javascript
-// app/routes/my-route.js
-import Ember from 'ember';
+// app/controller/your-controller.js
+import Controller from '@ember/controller';
+import { inject as service } from '@ember/service';
+import { action } from '@ember/object';
 
-export default Ember.Route.extend({
-  client: Ember.inject.service('window-messenger-client'),
+export default class YourController extends Controller {
+  @service('window-messenger-client')
+  client;
 
-  actions: {
-    openPopup() {
-      if (!this.get('client').hasTarget('popup')) {
-        let win = window.open('/some/path', 'Example popup', 'toolbar=no,resizable=no,width=400,height=400');
-        this.get('client').addTarget('popup', win);
-      }
-    },
+  @action
+  openPopup() {
+    if (!this.get('client').hasTarget('popup')) {
+      let win = window.open('/some/path', 'Example popup', 'toolbar=no,resizable=no,width=400,height=400');
+      this.get('client').addTarget('popup', win);
+    }
   }
-});
+}
 ```
 
 
