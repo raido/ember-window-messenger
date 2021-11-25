@@ -168,6 +168,7 @@ export default class XFrameComponent extends Component {
 }
 
 // app/components/x-frame.hbs
+// Install ember-render-modifiers for did-insert/will-destory modifiers
 <iframe 
   ...attributes
   {{did-insert this.register}}
