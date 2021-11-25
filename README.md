@@ -166,7 +166,8 @@ export default class XFrameComponent extends Component {
     this.client.removeTarget(this.args.target);
   }
 }
-
+```
+```html
 // app/components/x-frame.hbs
 // Install ember-render-modifiers for did-insert/will-destory modifiers
 <iframe 
@@ -177,7 +178,6 @@ export default class XFrameComponent extends Component {
 
 // app/templates/your-route.hbs
 <XFrame src="<url>" @target="target-1"/>
-
 ```
 #### Popup with window.open
 
