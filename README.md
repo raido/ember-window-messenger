@@ -168,15 +168,15 @@ export default class XFrameComponent extends Component {
 }
 ```
 ```html
-// app/components/x-frame.hbs
-// Install ember-render-modifiers for did-insert/will-destory modifiers
+<!-- app/components/x-frame.hbs -->
+<!-- Install ember-render-modifiers for did-insert/will-destory modifiers -->
 <iframe 
   ...attributes
   {{did-insert this.register}}
   {{will-destory this.unregister}}
 ></iframe>
 
-// app/templates/your-route.hbs
+<!-- app/templates/your-route.hbs -->
 <XFrame src="<url>" @target="target-1"/>
 ```
 #### Popup with window.open
