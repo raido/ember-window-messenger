@@ -21,6 +21,26 @@ jobs:
     - name: Lint
       run: yarn lint
 
+  build-windows:
+    runs-on: windows-latest
+    needs: lint
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [
+          'ie'
+        ]
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
+    - uses: volta-cli/action@v1
+    - name: Install dependencies
+      run: yarn install --frozen-lockfile
+    - name: Test
+      run: yarn test:ember --launch ${{ matrix.browser }}
+
   test:
     name: Tests
     runs-on: ${{ matrix.os }}

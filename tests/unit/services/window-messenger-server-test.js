@@ -10,10 +10,11 @@ module('Unit | Service | window messenger server', function (hooks) {
     let server = this.owner.lookup('service:window-messenger-server');
     let client = this.owner.lookup('service:window-messenger-client');
 
-    server.on('client-request', (/*resolve, reject, query*/) => {
+    server.on('client-request', (resolve /*, reject, query*/) => {
       assert.ok(true);
+      resolve();
     });
-    client.fetch('client-request');
+    await client.fetch('client-request');
   });
 
   test("it should not receive client's request if not a match", async function (assert) {
@@ -35,9 +36,10 @@ module('Unit | Service | window messenger server', function (hooks) {
 
     server.on('client-request', (resolve, reject, query) => {
       assert.equal(query.id, 1, 'it should have got query parameters');
+      resolve();
     });
 
-    client.fetch('client-request', {
+    await client.fetch('client-request', {
       id: 1,
     });
   });
@@ -50,9 +52,8 @@ module('Unit | Service | window messenger server', function (hooks) {
     server.on('client-request', () => {
       assert.ok(true);
     });
-
-    server.destroy();
     client.fetch('client-request');
+    server.destroy();
     await settled();
   });
 });
