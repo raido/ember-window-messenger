@@ -224,9 +224,9 @@ export default class YourController extends Controller {
 
   @action
   openPopup() {
-    if (!this.get('client').hasTarget('popup')) {
+    if (!this.client.hasTarget('popup')) {
       let win = window.open('/some/path', 'Example popup', 'toolbar=no,resizable=no,width=400,height=400');
-      this.get('client').addTarget('popup', win);
+      this.client.addTarget('popup', win);
     }
   }
 }
