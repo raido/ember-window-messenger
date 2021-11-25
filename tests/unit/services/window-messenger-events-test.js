@@ -1,5 +1,6 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
+import { settled } from '@ember/test-helpers';
 
 module('Unit | Service | window messenger events', function (hooks) {
   setupTest(hooks);
@@ -23,6 +24,8 @@ module('Unit | Service | window messenger events', function (hooks) {
     // send first message
     window.postMessage(message, '*');
 
+    await settled();
+
     // send second message
     window.postMessage(message, '*');
   });
@@ -43,5 +46,6 @@ module('Unit | Service | window messenger events', function (hooks) {
     });
 
     window.postMessage(message, 'http://localhost:9999');
+    await settled();
   });
 });
