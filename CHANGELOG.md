@@ -1,5 +1,15 @@
 # ember-window-messenger
 
+## [3.0.0] - 2021-11-25
+
+## Breaking
+- Drop support for Node < 12
+
+## Changed
+- Update to Ember.js v3.28.x, no deprecations, Octane and everything.
+- Ember v4.0 compliant
+- Embroider compliant
+
 ## [2.0.1] - 2018-10-06
 ### Changed
 - Internal: Clean up obsolete files
