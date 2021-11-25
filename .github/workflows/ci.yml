@@ -39,7 +39,7 @@ jobs:
     - name: Install dependencies
       run: yarn install --frozen-lockfile
     - name: Test
-      run: yarn test:ember --launch ${{ matrix.browser }}
+      run: yarn test:ember --host 127.0.0.1 --launch ${{ matrix.browser }}
 
   test:
     name: Tests
