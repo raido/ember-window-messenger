@@ -28,10 +28,13 @@
     "start": "ember serve",
     "test": "npm-run-all lint test:*",
     "test:ember": "ember test",
-    "test:ember-compatibility": "ember try:each"
+    "test:ember-compatibility": "ember try:each",
+    "prepack": "ember ts:precompile",
+    "postpack": "ember ts:clean"
   },
   "dependencies": {
-    "ember-cli-babel": "^7.26.6"
+    "ember-cli-babel": "^7.26.6",
+    "ember-cli-typescript": "^4.2.1"
   },
   "devDependencies": {
     "@ember/optional-features": "^2.0.0",
@@ -40,6 +43,28 @@
     "@embroider/test-setup": "~0.47.2",
     "@glimmer/component": "^1.0.4",
     "@glimmer/tracking": "^1.0.4",
+    "@types/ember-qunit": "^3.4.15",
+    "@types/ember-resolver": "^5.0.10",
+    "@types/ember__application": "^3.16.3",
+    "@types/ember__array": "^3.16.4",
+    "@types/ember__component": "^3.16.6",
+    "@types/ember__controller": "^3.16.6",
+    "@types/ember__debug": "^3.16.5",
+    "@types/ember__engine": "^3.16.3",
+    "@types/ember__error": "^3.16.1",
+    "@types/ember__object": "^3.12.6",
+    "@types/ember__polyfills": "^3.12.1",
+    "@types/ember__routing": "^3.16.15",
+    "@types/ember__runloop": "^3.16.3",
+    "@types/ember__service": "^3.16.1",
+    "@types/ember__string": "^3.16.3",
+    "@types/ember__template": "^3.16.1",
+    "@types/ember__test": "^3.16.1",
+    "@types/ember__test-helpers": "^2.0.2",
+    "@types/ember__utils": "^3.16.2",
+    "@types/htmlbars-inline-precompile": "^1.0.1",
+    "@types/qunit": "^2.11.2",
+    "@types/rsvp": "^4.0.4",
     "babel-eslint": "^10.1.0",
     "broccoli-asset-rev": "^3.0.0",
     "ember-auto-import": "~2.2.4",
@@ -75,6 +100,7 @@
     "prettier": "^2.3.2",
     "qunit": "^2.16.0",
     "qunit-dom": "^1.6.0",
+    "typescript": "^4.5.2",
     "webpack": "5"
   },
   "engines": {
