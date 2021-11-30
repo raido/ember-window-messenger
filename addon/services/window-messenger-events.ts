@@ -2,9 +2,9 @@ import { A } from '@ember/array';
 import Service from '@ember/service';
 
 export default class WindowMessengerEventService extends Service {
-  registeredEvents = {};
+  registeredEvents: { [key: string]: OnEventCallback<unknown> } = {};
 
-  targetOriginMap = {}; // This is set from environment config automatically
+  targetOriginMap: { [key: string]: string } = {}; // This is set from environment config automatically
 
   get allowedOrigins() {
     let map = this.targetOriginMap;
@@ -20,20 +20,24 @@ export default class WindowMessengerEventService extends Service {
     window.addEventListener('message', this._onMessage);
   }
 
-  on(eventName, callback) {
+  on<Payload>(eventName: string, callback: OnEventCallback<Payload>) {
     if (eventName in this.registeredEvents) {
       return;
     }
     this.registeredEvents[eventName] = callback;
   }
 
-  off(eventName, callback) {
+  off(eventName: string, callback: OnEventCallback<unknown>) {
     if (this.registeredEvents[eventName] === callback) {
-      this.registeredEvents[eventName] = null;
+      delete this.registeredEvents[eventName];
     }
   }
 
-  trigger(eventName, message, event) {
+  trigger(
+    eventName: string,
+    message: ParsedTransmittedMessage,
+    event: TransmittedMessageEvent
+  ) {
     const cb = this.registeredEvents[eventName];
     if (cb) {
       cb(message, event);
@@ -48,11 +52,11 @@ export default class WindowMessengerEventService extends Service {
    * @return {Boolean}
    */
 
-  _isOriginAllowed(origin) {
+  _isOriginAllowed(origin: string) {
     return this.allowedOrigins.includes(origin);
   }
 
-  _parseMessage(data) {
+  _parseMessage(data: TransmittedMessage): ParsedTransmittedMessage | null {
     let message = null;
     if (typeof data === 'string') {
       try {
@@ -64,7 +68,7 @@ export default class WindowMessengerEventService extends Service {
     return message;
   }
 
-  _onMessage = (event) => {
+  _onMessage = (event: TransmittedMessageEvent) => {
     if (this._isOriginAllowed(event.origin)) {
       let message = this._parseMessage(event.data);
       if (message !== null) {
@@ -78,5 +82,23 @@ export default class WindowMessengerEventService extends Service {
     super.willDestroy();
     // Remove event listener when this service is getting destroyed
     window.removeEventListener('message', this._onMessage);
+  }
+}
+
+type TransmittedMessage = string;
+type TransmittedMessageEvent = MessageEvent<TransmittedMessage>;
+
+export type OnEventCallback<P> = (
+  message: ParsedTransmittedMessage & P,
+  event: MessageEvent
+) => void;
+
+interface ParsedTransmittedMessage {
+  type: string;
+}
+
+declare module '@ember/service' {
+  interface Registry {
+    'window-messenger-events': WindowMessengerEventService;
   }
 }
