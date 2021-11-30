@@ -1,13 +1,18 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { settled } from '@ember/test-helpers';
+import WindowMessengerServerService, {
+  OnEventCallback,
+} from 'ember-window-messenger/services/server';
 
 module('Unit | Service | window messenger server', function (hooks) {
   setupTest(hooks);
 
   test("it should receive client's request", async function (assert) {
     assert.expect(1);
-    let server = this.owner.lookup('service:window-messenger-server');
+    let server: WindowMessengerServerService = this.owner.lookup(
+      'service:window-messenger-server'
+    );
     let client = this.owner.lookup('service:window-messenger-client');
 
     server.on('client-request', (resolve /*, reject, query*/) => {
@@ -20,7 +25,9 @@ module('Unit | Service | window messenger server', function (hooks) {
   test("it should not receive client's request if not a match", async function (assert) {
     assert.expect(0);
 
-    let server = this.owner.lookup('service:window-messenger-server');
+    let server: WindowMessengerServerService = this.owner.lookup(
+      'service:window-messenger-server'
+    );
     let client = this.owner.lookup('service:window-messenger-client');
 
     server.on('client-request', (/*resolve, reject, query*/) => {
@@ -31,13 +38,18 @@ module('Unit | Service | window messenger server', function (hooks) {
 
   test('it should receive query from client', async function (assert) {
     assert.expect(1);
-    let server = this.owner.lookup('service:window-messenger-server');
+    let server: WindowMessengerServerService = this.owner.lookup(
+      'service:window-messenger-server'
+    );
     let client = this.owner.lookup('service:window-messenger-client');
 
-    server.on('client-request', (resolve, reject, query) => {
-      assert.equal(query.id, 1, 'it should have got query parameters');
-      resolve();
-    });
+    server.on<null, null, { id: number }>(
+      'client-request',
+      (resolve, _reject, query) => {
+        assert.equal(query.id, 1, 'it should have got query parameters');
+        resolve();
+      }
+    );
 
     await client.fetch('client-request', {
       id: 1,
@@ -46,7 +58,9 @@ module('Unit | Service | window messenger server', function (hooks) {
 
   test('it should not receive client request if destroyed', async function (assert) {
     assert.expect(0);
-    let server = this.owner.lookup('service:window-messenger-server');
+    let server: WindowMessengerServerService = this.owner.lookup(
+      'service:window-messenger-server'
+    );
     let client = this.owner.lookup('service:window-messenger-client');
 
     server.on('client-request', () => {
@@ -54,6 +68,22 @@ module('Unit | Service | window messenger server', function (hooks) {
     });
     client.fetch('client-request');
     server.destroy();
+    await settled();
+  });
+
+  test('it should not receive client request if manually de-registering', async function (assert) {
+    assert.expect(0);
+    let server: WindowMessengerServerService = this.owner.lookup(
+      'service:window-messenger-server'
+    );
+    let client = this.owner.lookup('service:window-messenger-client');
+
+    const handler: OnEventCallback<null, null, null> = () => {
+      assert.ok(true);
+    };
+    server.on('client-request', handler);
+    server.off('client-request', handler);
+    client.fetch('client-request');
     await settled();
   });
 });

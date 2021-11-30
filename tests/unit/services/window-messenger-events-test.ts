@@ -4,6 +4,7 @@ import { settled } from '@ember/test-helpers';
 import WindowMessengerEventService, {
   OnEventCallback,
 } from 'ember-window-messenger/services/window-messenger-events';
+import waitUntil from '@ember/test-helpers/wait-until';
 
 module('Unit | Service | window messenger events', function (hooks) {
   setupTest(hooks);
@@ -49,18 +50,25 @@ module('Unit | Service | window messenger events', function (hooks) {
       query: {},
     });
 
+    let gotTheMessage = false;
     const handler: OnEventCallback<{ name: string }> = (payload) => {
       assert.equal(payload.name, 'hello-world');
+      gotTheMessage = true;
     };
     service.on<{ name: string }>('from:test-dummy', handler);
     // send first message
     window.postMessage(message, '*');
 
-    await settled();
+    await waitUntil(() => {
+      return gotTheMessage;
+    });
+
     service.off('from:test-dummy', handler);
 
     // send second message
     window.postMessage(message, '*');
+
+    await settled();
   });
 
   test('it should handle message, if not allowed origin', async function (assert) {

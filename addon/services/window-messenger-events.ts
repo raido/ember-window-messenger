@@ -86,14 +86,14 @@ export default class WindowMessengerEventService extends Service {
 }
 
 type TransmittedMessage = string;
-type TransmittedMessageEvent = MessageEvent<TransmittedMessage>;
+export type TransmittedMessageEvent = MessageEvent<TransmittedMessage>;
 
 export type OnEventCallback<P> = (
   message: ParsedTransmittedMessage & P,
   event: MessageEvent
 ) => void;
 
-interface ParsedTransmittedMessage {
+export interface ParsedTransmittedMessage {
   type: string;
 }
 
