@@ -1,5 +1,11 @@
 # ember-window-messenger
 
+## [3.1.1] - 2021-12-01
+
+### Changed
+
+- Ignore `.github` folder for NPM publishing
+
 ## [3.1.0] - 2021-12-01
 
 ### Added
