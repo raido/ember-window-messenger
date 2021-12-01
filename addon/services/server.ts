@@ -24,11 +24,11 @@ export default class WindowMessengerServerService extends Service {
    */
   _respond(
     uuid: string,
-    payload: Record<string, unknown> | undefined,
+    payload: MessagePayload,
     event: TransmittedMessageEvent,
     hasError: boolean
   ) {
-    const query = {
+    const query: ServerResponseMessage = {
       id: uuid,
       type: 'ember-window-messenger-server',
       response: payload,
@@ -114,7 +114,13 @@ export default class WindowMessengerServerService extends Service {
   }
 }
 
-type MessagePayload = Record<string, unknown>;
+type MessagePayload =
+  | Record<string, unknown>
+  | string
+  | boolean
+  | number
+  | null
+  | undefined;
 type ResolveMethod<ResolvedData> = (
   data?: MessagePayload & ResolvedData
 ) => void;
@@ -128,6 +134,13 @@ interface ParsedTransmittedMessage {
   name: string;
   query: Query;
 }
+
+export type ServerResponseMessage = {
+  id: ReturnType<typeof guidFor>;
+  type: 'ember-window-messenger-server';
+  response: MessagePayload | undefined;
+  error: boolean;
+};
 
 export type OnEventCallback<Resolve, Reject, Q> = (
   resolve: ResolveMethod<Resolve>,
