@@ -7,7 +7,7 @@ export default class WindowMessengerEventService extends Service {
   targetOriginMap: { [key: string]: string } = {}; // This is set from environment config automatically
 
   get allowedOrigins() {
-    let map = this.targetOriginMap;
+    const map = this.targetOriginMap;
     return A(
       Object.keys(map).map((key) => {
         return map[key];
@@ -70,7 +70,7 @@ export default class WindowMessengerEventService extends Service {
 
   _onMessage = (event: TransmittedMessageEvent) => {
     if (this._isOriginAllowed(event.origin)) {
-      let message = this._parseMessage(event.data);
+      const message = this._parseMessage(event.data);
       if (message !== null) {
         this.trigger(`from:${message.type}`, message, event);
       }

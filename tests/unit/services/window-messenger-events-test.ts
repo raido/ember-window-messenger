@@ -12,11 +12,11 @@ module('Unit | Service | window messenger events', function (hooks) {
   test('it should register and deregister message event listener when destroyed', async function (assert) {
     assert.expect(1);
 
-    let service: WindowMessengerEventService = this.owner.lookup(
+    const service: WindowMessengerEventService = this.owner.lookup(
       'service:window-messenger-events'
     );
 
-    let message = JSON.stringify({
+    const message = JSON.stringify({
       id: +new Date(),
       type: 'test-dummy',
       name: 'hello-world',
@@ -39,11 +39,11 @@ module('Unit | Service | window messenger events', function (hooks) {
   test('it should register and deregister message event listener manually', async function (assert) {
     assert.expect(1);
 
-    let service: WindowMessengerEventService = this.owner.lookup(
+    const service: WindowMessengerEventService = this.owner.lookup(
       'service:window-messenger-events'
     );
 
-    let message = JSON.stringify({
+    const message = JSON.stringify({
       id: +new Date(),
       type: 'test-dummy',
       name: 'hello-world',
@@ -74,10 +74,10 @@ module('Unit | Service | window messenger events', function (hooks) {
   test('it should handle message, if not allowed origin', async function (assert) {
     assert.expect(0);
 
-    let service: WindowMessengerEventService = this.owner.lookup(
+    const service: WindowMessengerEventService = this.owner.lookup(
       'service:window-messenger-events'
     );
-    let message = JSON.stringify({
+    const message = JSON.stringify({
       id: +new Date(),
       type: 'test-dummy',
       name: 'hello-world',

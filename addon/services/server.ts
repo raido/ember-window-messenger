@@ -1,7 +1,10 @@
 import { assert } from '@ember/debug';
 import { guidFor } from '@ember/object/internals';
 import Service, { inject as service } from '@ember/service';
-import WindowMessengerEventService, { ParsedTransmittedMessage as WindowMessengerEventsParsedTransmittedMessage, TransmittedMessageEvent } from './window-messenger-events';
+import WindowMessengerEventService, {
+  ParsedTransmittedMessage as WindowMessengerEventsParsedTransmittedMessage,
+  TransmittedMessageEvent,
+} from './window-messenger-events';
 
 export default class WindowMessengerServerService extends Service {
   @service('window-messenger-events')
@@ -21,11 +24,11 @@ export default class WindowMessengerServerService extends Service {
    */
   _respond(
     uuid: string,
-    payload: {} | undefined,
+    payload: Record<string, unknown> | undefined,
     event: TransmittedMessageEvent,
     hasError: boolean
   ) {
-    let query = {
+    const query = {
       id: uuid,
       type: 'ember-window-messenger-server',
       response: payload,
@@ -37,7 +40,9 @@ export default class WindowMessengerServerService extends Service {
     );
     // Not really sure why TS fails with method overload matching.
     // Related issues on Github - https://github.com/Microsoft/TypeScript/issues/30042
-    //@ts-ignore
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     event.source?.postMessage(JSON.stringify(query), event.origin);
   }
 
@@ -48,7 +53,8 @@ export default class WindowMessengerServerService extends Service {
    * @param  {Object} event
    */
   _onMessage = (
-    message: WindowMessengerEventsParsedTransmittedMessage & ParsedTransmittedMessage,
+    message: WindowMessengerEventsParsedTransmittedMessage &
+      ParsedTransmittedMessage,
     event: TransmittedMessageEvent
   ) => {
     this.trigger(
@@ -108,14 +114,19 @@ export default class WindowMessengerServerService extends Service {
   }
 }
 
-type ResolveMethod<ResolvedData> = (data?: {} & ResolvedData) => void;
-type RejectMethod<RejectedData> = (data?: {} & RejectedData) => void;
-type Query = {};
+type MessagePayload = Record<string, unknown>;
+type ResolveMethod<ResolvedData> = (
+  data?: MessagePayload & ResolvedData
+) => void;
+type RejectMethod<RejectedData> = (
+  data?: MessagePayload & RejectedData
+) => void;
+type Query = MessagePayload;
 
 interface ParsedTransmittedMessage {
   id: ReturnType<typeof guidFor>;
   name: string;
-  query: Query
+  query: Query;
 }
 
 export type OnEventCallback<Resolve, Reject, Q> = (
