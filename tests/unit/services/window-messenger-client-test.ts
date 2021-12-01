@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { settled } from '@ember/test-helpers';
-import WindowMessengerClientService from 'dummy/services/window-messenger-client';
+import WindowMessengerClientService from 'ember-window-messenger/services/client';
 import WindowMessengerServerService from 'ember-window-messenger/services/server';
 
 module('Unit | Service | window messenger client', function (hooks) {
