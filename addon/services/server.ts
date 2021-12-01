@@ -24,7 +24,7 @@ export default class WindowMessengerServerService extends Service {
    */
   _respond(
     uuid: string,
-    payload: {} | undefined,
+    payload: Record<string, unknown> | undefined,
     event: TransmittedMessageEvent,
     hasError: boolean
   ) {
@@ -40,7 +40,9 @@ export default class WindowMessengerServerService extends Service {
     );
     // Not really sure why TS fails with method overload matching.
     // Related issues on Github - https://github.com/Microsoft/TypeScript/issues/30042
-    //@ts-ignore
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     event.source?.postMessage(JSON.stringify(query), event.origin);
   }
 
@@ -112,9 +114,14 @@ export default class WindowMessengerServerService extends Service {
   }
 }
 
-type ResolveMethod<ResolvedData> = (data?: {} & ResolvedData) => void;
-type RejectMethod<RejectedData> = (data?: {} & RejectedData) => void;
-type Query = {};
+type MessagePayload = Record<string, unknown>;
+type ResolveMethod<ResolvedData> = (
+  data?: MessagePayload & ResolvedData
+) => void;
+type RejectMethod<RejectedData> = (
+  data?: MessagePayload & RejectedData
+) => void;
+type Query = MessagePayload;
 
 interface ParsedTransmittedMessage {
   id: ReturnType<typeof guidFor>;
