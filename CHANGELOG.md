@@ -1,5 +1,12 @@
 # ember-window-messenger
 
+## [3.1.0] - 2021-12-01
+
+### Added
+
+- TypeScript definitions support.
+- `addon/services/*` converted to TypeScript.
+
 ## [3.0.0] - 2021-11-25
 
 ## Breaking
