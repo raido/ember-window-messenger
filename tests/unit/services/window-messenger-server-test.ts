@@ -10,10 +10,10 @@ module('Unit | Service | window messenger server', function (hooks) {
 
   test("it should receive client's request", async function (assert) {
     assert.expect(1);
-    let server: WindowMessengerServerService = this.owner.lookup(
+    const server: WindowMessengerServerService = this.owner.lookup(
       'service:window-messenger-server'
     );
-    let client = this.owner.lookup('service:window-messenger-client');
+    const client = this.owner.lookup('service:window-messenger-client');
 
     server.on('client-request', (resolve /*, reject, query*/) => {
       assert.ok(true);
@@ -25,10 +25,10 @@ module('Unit | Service | window messenger server', function (hooks) {
   test("it should not receive client's request if not a match", async function (assert) {
     assert.expect(0);
 
-    let server: WindowMessengerServerService = this.owner.lookup(
+    const server: WindowMessengerServerService = this.owner.lookup(
       'service:window-messenger-server'
     );
-    let client = this.owner.lookup('service:window-messenger-client');
+    const client = this.owner.lookup('service:window-messenger-client');
 
     server.on('client-request', (/*resolve, reject, query*/) => {
       assert.ok(true);
@@ -38,10 +38,10 @@ module('Unit | Service | window messenger server', function (hooks) {
 
   test('it should receive query from client', async function (assert) {
     assert.expect(1);
-    let server: WindowMessengerServerService = this.owner.lookup(
+    const server: WindowMessengerServerService = this.owner.lookup(
       'service:window-messenger-server'
     );
-    let client = this.owner.lookup('service:window-messenger-client');
+    const client = this.owner.lookup('service:window-messenger-client');
 
     server.on<null, null, { id: number }>(
       'client-request',
@@ -58,10 +58,10 @@ module('Unit | Service | window messenger server', function (hooks) {
 
   test('it should not receive client request if destroyed', async function (assert) {
     assert.expect(0);
-    let server: WindowMessengerServerService = this.owner.lookup(
+    const server: WindowMessengerServerService = this.owner.lookup(
       'service:window-messenger-server'
     );
-    let client = this.owner.lookup('service:window-messenger-client');
+    const client = this.owner.lookup('service:window-messenger-client');
 
     server.on('client-request', () => {
       assert.ok(true);
@@ -73,10 +73,10 @@ module('Unit | Service | window messenger server', function (hooks) {
 
   test('it should not receive client request if manually de-registering', async function (assert) {
     assert.expect(0);
-    let server: WindowMessengerServerService = this.owner.lookup(
+    const server: WindowMessengerServerService = this.owner.lookup(
       'service:window-messenger-server'
     );
-    let client = this.owner.lookup('service:window-messenger-client');
+    const client = this.owner.lookup('service:window-messenger-client');
 
     const handler: OnEventCallback<null, null, null> = () => {
       assert.ok(true);

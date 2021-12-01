@@ -1,7 +1,10 @@
 import { assert } from '@ember/debug';
 import { guidFor } from '@ember/object/internals';
 import Service, { inject as service } from '@ember/service';
-import WindowMessengerEventService, { ParsedTransmittedMessage as WindowMessengerEventsParsedTransmittedMessage, TransmittedMessageEvent } from './window-messenger-events';
+import WindowMessengerEventService, {
+  ParsedTransmittedMessage as WindowMessengerEventsParsedTransmittedMessage,
+  TransmittedMessageEvent,
+} from './window-messenger-events';
 
 export default class WindowMessengerServerService extends Service {
   @service('window-messenger-events')
@@ -25,7 +28,7 @@ export default class WindowMessengerServerService extends Service {
     event: TransmittedMessageEvent,
     hasError: boolean
   ) {
-    let query = {
+    const query = {
       id: uuid,
       type: 'ember-window-messenger-server',
       response: payload,
@@ -48,7 +51,8 @@ export default class WindowMessengerServerService extends Service {
    * @param  {Object} event
    */
   _onMessage = (
-    message: WindowMessengerEventsParsedTransmittedMessage & ParsedTransmittedMessage,
+    message: WindowMessengerEventsParsedTransmittedMessage &
+      ParsedTransmittedMessage,
     event: TransmittedMessageEvent
   ) => {
     this.trigger(
@@ -115,7 +119,7 @@ type Query = {};
 interface ParsedTransmittedMessage {
   id: ReturnType<typeof guidFor>;
   name: string;
-  query: Query
+  query: Query;
 }
 
 export type OnEventCallback<Resolve, Reject, Q> = (
