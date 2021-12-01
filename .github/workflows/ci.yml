@@ -20,6 +20,8 @@ jobs:
       run: yarn install --frozen-lockfile
     - name: Lint
       run: yarn lint
+    - name: TypeScript build
+      run: yarn ts:build
 
   build-windows:
     runs-on: windows-latest
