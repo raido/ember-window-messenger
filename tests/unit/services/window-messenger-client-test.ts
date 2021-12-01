@@ -1,26 +1,34 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { settled } from '@ember/test-helpers';
+import WindowMessengerClientService from 'dummy/services/window-messenger-client';
+import WindowMessengerServerService from 'ember-window-messenger/services/server';
 
 module('Unit | Service | window messenger client', function (hooks) {
   setupTest(hooks);
 
   test('it should receive response from the server for targeted request', async function (assert) {
     assert.expect(1);
-    let client = this.owner.lookup('service:window-messenger-client');
+    const client: WindowMessengerClientService = this.owner.lookup(
+      'service:window-messenger-client'
+    );
     client.addTarget('target-1', window);
-    let server = this.owner.lookup('service:window-messenger-server');
+    const server: WindowMessengerServerService = this.owner.lookup(
+      'service:window-messenger-server'
+    );
 
     server.on('client-request', (resolve) => {
       resolve('Hello');
     });
     await client
-      .fetch('target-1:client-request')
+      .fetch<string>('target-1:client-request')
       .then((response) => assert.equal(response, 'Hello'));
   });
 
   test('it should throw error if target window is not registered', async function (assert) {
-    let client = this.owner.lookup('service:window-messenger-client');
+    const client: WindowMessengerClientService = this.owner.lookup(
+      'service:window-messenger-client'
+    );
 
     assert.throws(() => {
       client.fetch('target-1:client-request');
@@ -28,7 +36,9 @@ module('Unit | Service | window messenger client', function (hooks) {
   });
 
   test('it should add and remove target', async function (assert) {
-    let client = this.owner.lookup('service:window-messenger-client');
+    const client: WindowMessengerClientService = this.owner.lookup(
+      'service:window-messenger-client'
+    );
     client.addTarget('target-1', window);
     client.removeTarget('target-1');
 
@@ -39,8 +49,12 @@ module('Unit | Service | window messenger client', function (hooks) {
 
   test('it should receive response from the server', async function (assert) {
     assert.expect(1);
-    let client = this.owner.lookup('service:window-messenger-client');
-    let server = this.owner.lookup('service:window-messenger-server');
+    const client: WindowMessengerClientService = this.owner.lookup(
+      'service:window-messenger-client'
+    );
+    const server: WindowMessengerServerService = this.owner.lookup(
+      'service:window-messenger-server'
+    );
 
     server.on('client-request', (resolve) => {
       resolve('Hello');
@@ -52,8 +66,12 @@ module('Unit | Service | window messenger client', function (hooks) {
 
   test('it should receive response from the server - rpc', async function (assert) {
     assert.expect(1);
-    let client = this.owner.lookup('service:window-messenger-client');
-    let server = this.owner.lookup('service:window-messenger-server');
+    const client: WindowMessengerClientService = this.owner.lookup(
+      'service:window-messenger-client'
+    );
+    const server: WindowMessengerServerService = this.owner.lookup(
+      'service:window-messenger-server'
+    );
 
     server.on('client-request', (resolve) => {
       resolve('I am RPC');
@@ -65,10 +83,14 @@ module('Unit | Service | window messenger client', function (hooks) {
 
   test('it should receive rejection from the server', async function (assert) {
     assert.expect(1);
-    let client = this.owner.lookup('service:window-messenger-client');
-    let server = this.owner.lookup('service:window-messenger-server');
+    const client: WindowMessengerClientService = this.owner.lookup(
+      'service:window-messenger-client'
+    );
+    const server: WindowMessengerServerService = this.owner.lookup(
+      'service:window-messenger-server'
+    );
 
-    server.on('client-request', (resolve, reject) => {
+    server.on('client-request', (_resolve, reject) => {
       reject('Failed');
     });
     await client
@@ -78,10 +100,14 @@ module('Unit | Service | window messenger client', function (hooks) {
 
   test('it should receive object from the server', async function (assert) {
     assert.expect(1);
-    let client = this.owner.lookup('service:window-messenger-client');
-    let server = this.owner.lookup('service:window-messenger-server');
+    const client: WindowMessengerClientService = this.owner.lookup(
+      'service:window-messenger-client'
+    );
+    const server: WindowMessengerServerService = this.owner.lookup(
+      'service:window-messenger-server'
+    );
 
-    let model = {
+    const model = {
       complex: {
         id: 1,
       },
@@ -97,16 +123,20 @@ module('Unit | Service | window messenger client', function (hooks) {
 
   test('it should complex rejection object from the server', async function (assert) {
     assert.expect(1);
-    let client = this.owner.lookup('service:window-messenger-client');
-    let server = this.owner.lookup('service:window-messenger-server');
+    const client: WindowMessengerClientService = this.owner.lookup(
+      'service:window-messenger-client'
+    );
+    const server: WindowMessengerServerService = this.owner.lookup(
+      'service:window-messenger-server'
+    );
 
-    let error = {
+    const error = {
       complex: {
         id: 1,
       },
     };
 
-    server.on('client-request', (resolve, reject) => {
+    server.on('client-request', (_resolve, reject) => {
       reject(error);
     });
     await client
@@ -116,8 +146,12 @@ module('Unit | Service | window messenger client', function (hooks) {
 
   test('it should not receive server response if destroyed', async function (assert) {
     assert.expect(0);
-    let client = this.owner.lookup('service:window-messenger-client');
-    let server = this.owner.lookup('service:window-messenger-server');
+    const client: WindowMessengerClientService = this.owner.lookup(
+      'service:window-messenger-client'
+    );
+    const server: WindowMessengerServerService = this.owner.lookup(
+      'service:window-messenger-server'
+    );
 
     server.on('client-request', (resolve) => {
       resolve('Hello');

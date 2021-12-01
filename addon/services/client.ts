@@ -1,19 +1,21 @@
 import { typeOf } from '@ember/utils';
-import { Promise as EmberPromise } from 'rsvp';
+import RSVP, { Promise as EmberPromise } from 'rsvp';
 import { assert } from '@ember/debug';
 import { dasherize } from '@ember/string';
 import { join as runJoin } from '@ember/runloop';
 import { guidFor } from '@ember/object/internals';
 import Service, { inject as service } from '@ember/service';
+import WindowMessengerEventService from './window-messenger-events';
+import { ServerResponseMessage } from './server';
 
 export default class WindowMessengerClientService extends Service {
-  @service
-  windowMessengerEvents;
+  @service('window-messenger-events')
+  windowMessengerEvents!: WindowMessengerEventService;
 
-  callbacks = {};
-  targets = {};
+  callbacks: CallbacksMap = {};
+  targets: { [key: string]: Window } = {};
 
-  targetOriginMap = {}; // This is set from environment config automatically
+  targetOriginMap: { [key: string]: string } = {}; // This is set from environment config automatically
 
   /**
    * Add new contentWindow target
@@ -22,7 +24,7 @@ export default class WindowMessengerClientService extends Service {
    * @param {contentWindow} targetWindow DOM contentWindow
    * @public
    */
-  addTarget(name, targetWindow) {
+  addTarget(name: string, targetWindow: Window) {
     this.targets[name] = targetWindow;
   }
 
@@ -32,7 +34,7 @@ export default class WindowMessengerClientService extends Service {
    * @param  {String} name
    * @public
    */
-  removeTarget(name) {
+  removeTarget(name: string) {
     delete this.targets[name];
   }
 
@@ -44,7 +46,7 @@ export default class WindowMessengerClientService extends Service {
    *
    * @return {Boolean}
    */
-  hasTarget(name) {
+  hasTarget(name: string) {
     if (!(name in this.targets)) {
       return false;
     }
@@ -55,7 +57,7 @@ export default class WindowMessengerClientService extends Service {
    * @private
    * @return {Window}
    */
-  _getWindow() {
+  _getWindow(): Window {
     return window;
   }
 
@@ -65,9 +67,9 @@ export default class WindowMessengerClientService extends Service {
    * @param  {String} uri
    * @return {Object}
    */
-  _parseURI(uri) {
-    let split = uri.split(':');
-    let resource = split[1] || split[0];
+  _parseURI(uri: string) {
+    const split = uri.split(':');
+    const resource = split[1] || split[0];
     return {
       target: split[1] ? split[0] : 'parent',
       resource: dasherize(resource),
@@ -81,9 +83,9 @@ export default class WindowMessengerClientService extends Service {
    * @private
    * @return {Boolean}
    */
-  _isTargetParent(target) {
-    let win = this._getWindow();
-    let isEmbedded = win.self !== (win.top || win.opener);
+  _isTargetParent(target: string) {
+    const win = this._getWindow();
+    const isEmbedded = win.self !== (win.top || win.opener);
     return isEmbedded || target === 'parent';
   }
 
@@ -91,8 +93,8 @@ export default class WindowMessengerClientService extends Service {
    * @private
    * @return {Window}
    */
-  _getWindowParent() {
-    let win = this._getWindow();
+  _getWindowParent(): Window {
+    const win = this._getWindow();
     return win.opener || win.parent;
   }
 
@@ -101,7 +103,7 @@ export default class WindowMessengerClientService extends Service {
    * @private
    * @return {Object}
    */
-  _targetFor(target) {
+  _targetFor(target: string) {
     return this._isTargetParent(target)
       ? this._getWindowParent()
       : this.targets[target];
@@ -110,9 +112,9 @@ export default class WindowMessengerClientService extends Service {
   /**
    * @param {String} target
    * @private
-   * @return {Object}
+   * @return {String}
    */
-  _targetOriginFor(target) {
+  _targetOriginFor(target: string) {
     return this.targetOriginMap[target];
   }
 
@@ -123,25 +125,25 @@ export default class WindowMessengerClientService extends Service {
    * @param  {Object} queryParams
    * @return {Promise}
    */
-  fetch(path, queryParams) {
-    let uri = this._parseURI(path);
-    let targetName = uri.target;
-    let queryObject = queryParams ? { ...queryParams } : {};
+  fetch<R, Q = void>(path: string, queryParams?: Query & Q): RSVP.Promise<R> {
+    const uri = this._parseURI(path);
+    const targetName = uri.target;
+    const queryObject = queryParams ? { ...queryParams } : {};
 
-    let targetOrigin = this._targetOriginFor(targetName);
+    const targetOrigin = this._targetOriginFor(targetName);
     assert(
       `Target origin for target: ${targetName} does not exist`,
       targetOrigin
     );
 
-    let target = this._targetFor(targetName);
+    const target = this._targetFor(targetName);
     assert(`Target window is not registered for: ${targetName}`, target);
 
     return new EmberPromise((resolve, reject) => {
       this._lazyRegisterMessagesListener();
 
-      let uuid = guidFor(queryObject);
-      let query = {
+      const uuid = guidFor(queryObject);
+      const query = {
         id: uuid,
         type: 'ember-window-messenger-client',
         name: uri.resource,
@@ -167,8 +169,8 @@ export default class WindowMessengerClientService extends Service {
    * @param  {Object} queryParams
    * @return {Promise}
    */
-  rpc(path, queryParams) {
-    return this.fetch(path, queryParams);
+  rpc<R, Q = void>(path: string, queryParams?: Query & Q) {
+    return this.fetch<R, Q>(path, queryParams);
   }
 
   /**
@@ -177,9 +179,9 @@ export default class WindowMessengerClientService extends Service {
    * @private
    * @param  {Object} message
    */
-  _onMessage = (message) => {
-    let { response, id, error } = message;
-    let inQueue = this.callbacks[id];
+  _onMessage = (message: ServerResponseMessage) => {
+    const { response, id, error } = message;
+    const inQueue = this.callbacks[id];
 
     if (typeOf(inQueue) === 'object') {
       if (error) {
@@ -204,5 +206,29 @@ export default class WindowMessengerClientService extends Service {
       'from:ember-window-messenger-server',
       this._onMessage
     );
+  }
+}
+
+type Query = Record<string, unknown>;
+type Payload =
+  | Record<string, unknown>
+  | string
+  | boolean
+  | number
+  | null
+  | undefined;
+type SuccessMethod = (json: Payload) => void;
+type ErrorMethod = (json: Payload) => void;
+
+type CallbacksMap = {
+  [key: string]: {
+    success: SuccessMethod;
+    error: ErrorMethod;
+  };
+};
+
+declare module '@ember/service' {
+  interface Registry {
+    'window-messenger-client': WindowMessengerClientService;
   }
 }
