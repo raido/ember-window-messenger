@@ -1,5 +1,11 @@
 # ember-window-messenger
 
+## [3.2.0] - 2021-12-13
+
+### Added
+
+- `has` method to server service to check if resource registration exists.
+
 ## [3.1.1] - 2021-12-01
 
 ### Changed
