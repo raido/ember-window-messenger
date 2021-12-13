@@ -8,6 +8,17 @@ import WindowMessengerServerService, {
 module('Unit | Service | window messenger server', function (hooks) {
   setupTest(hooks);
 
+  test('has() resource method', async function (assert) {
+    const server: WindowMessengerServerService = this.owner.lookup(
+      'service:window-messenger-server'
+    );
+    assert.false(server.has('client-request'), 'has no resource');
+    server.on('client-request', (resolve /*, reject, query*/) => {
+      resolve();
+    });
+    assert.true(server.has('client-request'), 'has resource');
+  });
+
   test("it should receive client's request", async function (assert) {
     assert.expect(1);
     const server: WindowMessengerServerService = this.owner.lookup(

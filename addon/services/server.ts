@@ -10,7 +10,7 @@ export default class WindowMessengerServerService extends Service {
   @service('window-messenger-events')
   windowMessengerEvents!: WindowMessengerEventService;
 
-  registeredResources: {
+  private _registeredResources: {
     [key: string]: OnEventCallback<unknown, unknown, unknown>;
   } = {};
 
@@ -89,15 +89,19 @@ export default class WindowMessengerServerService extends Service {
     callback: OnEventCallback<Resolve, Reject, Query>
   ) {
     this._lazyRegisterMessagesListener();
-    this.registeredResources[resourceName] = callback;
+    this._registeredResources[resourceName] = callback;
+  }
+
+  has(resourceName: string): boolean {
+    return resourceName in this._registeredResources;
   }
 
   off(
     resourceName: string,
     callback: OnEventCallback<unknown, unknown, unknown>
   ) {
-    if (this.registeredResources[resourceName] === callback) {
-      delete this.registeredResources[resourceName];
+    if (this._registeredResources[resourceName] === callback) {
+      delete this._registeredResources[resourceName];
     }
   }
 
@@ -107,7 +111,7 @@ export default class WindowMessengerServerService extends Service {
     reject: RejectMethod<Reject>,
     query: Query & Q
   ) {
-    const cb = this.registeredResources[resourceName];
+    const cb = this._registeredResources[resourceName];
     if (cb) {
       cb(resolve, reject, query);
     }
