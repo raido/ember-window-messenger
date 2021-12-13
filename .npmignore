@@ -20,6 +20,7 @@
 /.prettierrc.js
 /.template-lintrc.js
 /.travis.yml
+/.vscode
 /.watchmanconfig
 /bower.json
 /config/ember-try.js
