@@ -1,5 +1,11 @@
 # ember-window-messenger
 
+## [3.3.0] - 2021-12-14
+
+### Added
+
+- Add test waiter to make window-messenger-client service notify Ember testing harness of pending promises.
+
 ## [3.2.0] - 2021-12-13
 
 ### Added
