@@ -7,6 +7,11 @@ import { guidFor } from '@ember/object/internals';
 import Service, { inject as service } from '@ember/service';
 import WindowMessengerEventService from './window-messenger-events';
 import { ServerResponseMessage } from './server';
+import { buildWaiter } from '@ember/test-waiters';
+
+const testWaiter = buildWaiter(
+  'ember-window-messenger:client-wait-for-response'
+);
 
 export default class WindowMessengerClientService extends Service {
   @service('window-messenger-events')
@@ -151,6 +156,7 @@ export default class WindowMessengerClientService extends Service {
       };
 
       this.callbacks[uuid] = {
+        testWaiterToken: <string>testWaiter.beginAsync(uuid),
         success: (json) => {
           runJoin(null, resolve, json);
         },
@@ -189,6 +195,7 @@ export default class WindowMessengerClientService extends Service {
       } else {
         inQueue.success(response);
       }
+      this.finishAsyncTestWaiter(inQueue.testWaiterToken);
     }
     delete this.callbacks[id];
   };
@@ -200,8 +207,16 @@ export default class WindowMessengerClientService extends Service {
     );
   }
 
+  private finishAsyncTestWaiter(token: string) {
+    testWaiter.endAsync(token);
+  }
+
   willDestroy() {
     super.willDestroy();
+    Object.keys(this.callbacks).forEach((uuid) => {
+      const handler = this.callbacks[uuid];
+      this.finishAsyncTestWaiter(handler.testWaiterToken);
+    });
     this.windowMessengerEvents.off(
       'from:ember-window-messenger-server',
       this._onMessage
@@ -222,6 +237,7 @@ type ErrorMethod = (json: Payload) => void;
 
 type CallbacksMap = {
   [key: string]: {
+    testWaiterToken: string;
     success: SuccessMethod;
     error: ErrorMethod;
   };
