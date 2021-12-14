@@ -4,6 +4,7 @@ import { settled } from '@ember/test-helpers';
 import WindowMessengerServerService, {
   OnEventCallback,
 } from 'ember-window-messenger/services/server';
+import WindowMessengerClientService from 'ember-window-messenger/services/client';
 
 module('Unit | Service | window messenger server', function (hooks) {
   setupTest(hooks);
@@ -24,7 +25,9 @@ module('Unit | Service | window messenger server', function (hooks) {
     const server: WindowMessengerServerService = this.owner.lookup(
       'service:window-messenger-server'
     );
-    const client = this.owner.lookup('service:window-messenger-client');
+    const client: WindowMessengerClientService = this.owner.lookup(
+      'service:window-messenger-client'
+    );
 
     server.on('client-request', (resolve /*, reject, query*/) => {
       assert.ok(true);
@@ -39,7 +42,9 @@ module('Unit | Service | window messenger server', function (hooks) {
     const server: WindowMessengerServerService = this.owner.lookup(
       'service:window-messenger-server'
     );
-    const client = this.owner.lookup('service:window-messenger-client');
+    const client: WindowMessengerClientService = this.owner.lookup(
+      'service:window-messenger-client'
+    );
 
     server.on('client-request', (/*resolve, reject, query*/) => {
       assert.ok(true);
@@ -52,7 +57,9 @@ module('Unit | Service | window messenger server', function (hooks) {
     const server: WindowMessengerServerService = this.owner.lookup(
       'service:window-messenger-server'
     );
-    const client = this.owner.lookup('service:window-messenger-client');
+    const client: WindowMessengerClientService = this.owner.lookup(
+      'service:window-messenger-client'
+    );
 
     server.on<null, null, { id: number }>(
       'client-request',
@@ -72,13 +79,16 @@ module('Unit | Service | window messenger server', function (hooks) {
     const server: WindowMessengerServerService = this.owner.lookup(
       'service:window-messenger-server'
     );
-    const client = this.owner.lookup('service:window-messenger-client');
+    const client: WindowMessengerClientService = this.owner.lookup(
+      'service:window-messenger-client'
+    );
 
     server.on('client-request', () => {
       assert.ok(true);
     });
     client.fetch('client-request');
     server.destroy();
+    client.destroy(); // TODO remove once timeout is implemented
     await settled();
   });
 
@@ -87,7 +97,9 @@ module('Unit | Service | window messenger server', function (hooks) {
     const server: WindowMessengerServerService = this.owner.lookup(
       'service:window-messenger-server'
     );
-    const client = this.owner.lookup('service:window-messenger-client');
+    const client: WindowMessengerClientService = this.owner.lookup(
+      'service:window-messenger-client'
+    );
 
     const handler: OnEventCallback<null, null, null> = () => {
       assert.ok(true);
@@ -95,6 +107,7 @@ module('Unit | Service | window messenger server', function (hooks) {
     server.on('client-request', handler);
     server.off('client-request', handler);
     client.fetch('client-request');
+    client.destroy(); // TODO remove once timeout is implemented
     await settled();
   });
 });
